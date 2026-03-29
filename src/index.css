@@ -1,0 +1,68 @@
+:root {
+  --bg: #0d0d0d;
+  --bg-card: #1a1a1a;
+  --text: #ffffff;
+  --text-muted: #a1a1aa;
+  
+  --accent: #ff00ff; /* Neon Pink */
+  --accent-light: #ff66ff;
+  --accent-soft: #330033;
+  --border: #ffffff;
+  --tag: #ffff00;
+  --tag-text: #000000;
+  --green: #00ff66;
+  --green-light: #003314;
+  --blue: #00ffff;
+  
+  --shadow-brutal: 4px 4px 0px 0px #ffffff;
+  --shadow-brutal-hover: 2px 2px 0px 0px #ffffff;
+  --border-brutal: 3px solid #ffffff;
+
+  --sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+  margin: 0 auto;
+  text-align: left;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* Brutalist Utilities */
+.brutal-border {
+  border: var(--border-brutal);
+}
+
+.brutal-shadow {
+  box-shadow: var(--shadow-brutal);
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.brutal-shadow:hover {
+  box-shadow: var(--shadow-brutal-hover);
+  transform: translate(2px, 2px);
+}
+
+.brutal-shadow-static {
+  box-shadow: var(--shadow-brutal);
+}
+
+code, .counter {
+  font-family: var(--mono);
+  display: inline-flex;
+  color: var(--text);
+}
