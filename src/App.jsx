@@ -27,16 +27,16 @@ const C = {
 };
 
 const skills = [
-  { name: "HTML", level: 90 },
-  { name: "CSS", level: 85 },
-  { name: "JavaScript", level: 80 },
-  { name: "PHP", level: 72 },
-  { name: "Laravel", level: 65 },
-  { name: "Python", level: 70 },
-  { name: "Java", level: 60 },
-  { name: "C++", level: 58 },
-  { name: "MySQL", level: 68 },
-  { name: "Git", level: 75 },
+  { name: "HTML", level: 70 },
+  { name: "CSS", level: 65 },
+  { name: "JavaScript", level: 60 },
+  { name: "PHP", level: 55 },
+  { name: "Laravel", level: 50 },
+  { name: "Python", level: 55 },
+  { name: "Java", level: 50 },
+  { name: "C++", level: 45 },
+  { name: "MySQL", level: 55 },
+  { name: "Git", level: 60 },
 ];
 
 const certs = [
@@ -444,7 +444,7 @@ function InstagramFeed() {
 function LinkedInWidget() {
   return (
     <div style={{ /* opacity:1 (fallback) */ opacity: 1, background: "transparent", padding: 0, overflow: "hidden", height: 600, display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
-       <div className="elfsight-app-7d57c602-fc49-44e2-8e19-8a84b8211002" data-elfsight-app-lazy style={{ width: "100%", maxWidth: "100%" }}></div>
+      <div className="elfsight-app-7d57c602-fc49-44e2-8e19-8a84b8211002" data-elfsight-app-lazy style={{ width: "100%", maxWidth: "100%" }}></div>
     </div>
   );
 }
@@ -475,14 +475,14 @@ function SocialSlider() {
     const timer = setTimeout(() => {
       try {
         if (window.eapps) requestAnimationFrame(() => window.eapps.init());
-      } catch (e) {}
+      } catch (e) { }
     }, 1000);
     return () => clearTimeout(timer);
   }, []);
 
   useGSAP(() => {
     if (!trackRef.current) return;
-    
+
     // Smooth infinite loop exactly like the featured banner
     gsap.to(trackRef.current, {
       xPercent: -50,
@@ -494,9 +494,9 @@ function SocialSlider() {
 
   return (
     <div style={{ width: "100%", overflow: "hidden", position: "relative" }}>
-      <div 
+      <div
         ref={trackRef}
-        style={{ 
+        style={{
           display: "flex", width: "max-content", alignItems: "center",
           gap: "5vw", paddingLeft: "5vw", paddingRight: "5vw"
         }}
@@ -712,7 +712,7 @@ export default function Portfolio() {
             marginBottom: 30, boxShadow: `4px 4px 0px 0px ${C.border}`
           }}>✦ Open to Opportunities</div>
 
-          <h1 className="h-name" style={{ opacity: 0, display: "inline-block", background: C.accent, color: C.bg, padding: "10px 3vw", border: `4px solid ${C.border}`, fontSize: "clamp(3.5rem,8vw,6.5rem)", fontFamily: '"Anton", sans-serif', fontWeight: 400, lineHeight: 1, letterSpacing: "0.02em", marginBottom: 20, textTransform: "uppercase", boxShadow: `8px 8px 0px ${C.blue}` }}>
+          <h1 className="h-name" style={{ opacity: 0, display: "inline-block", background: C.accent, color: C.bg, padding: "10px 3vw", border: `4px solid ${C.border}`, fontSize: "clamp(3.5rem,8vw,6.5rem)", fontFamily: 'Helvetica, sans-serif', fontWeight: "bold", lineHeight: 1, letterSpacing: "0.02em", marginBottom: 20, textTransform: "uppercase", boxShadow: `8px 8px 0px ${C.blue}` }}>
             Swastik
           </h1>
 
@@ -725,7 +725,7 @@ export default function Portfolio() {
           </p>
 
           <div className="h-btns" style={{ opacity: 0, display: "flex", gap: 20, flexWrap: "wrap", justifyContent: "center" }}>
-            <MagBtn onClick={() => alert("🔗 Replace with your resume URL!")} style={{ padding: "16px 36px", fontWeight: 800, fontSize: 15, background: C.accent, color: C.bg, fontFamily: "var(--sans)", textTransform: "uppercase" }}>
+            <MagBtn onClick={() => window.open("/swastikresume.pdf", "_blank")} style={{ padding: "16px 36px", fontWeight: 800, fontSize: 15, background: C.accent, color: C.bg, fontFamily: "var(--sans)", textTransform: "uppercase" }}>
               ↓ Resume
             </MagBtn>
             <MagBtn onClick={() => goto("Contact")} style={{ padding: "16px 36px", fontWeight: 800, fontSize: 15, background: C.blue, color: C.bg, fontFamily: "var(--sans)", textTransform: "uppercase" }}>
@@ -829,7 +829,7 @@ export default function Portfolio() {
               <div style={{ fontWeight: 900, fontSize: 24, marginBottom: 8, color: C.bg, textTransform: "uppercase" }}>My Resume</div>
               <div style={{ fontSize: 16, fontWeight: 700, color: C.bg, fontFamily: "var(--sans)" }}>Full CV with education, experience, and certifications.</div>
             </div>
-            <MagBtn onClick={() => alert("🔗 Replace with your resume URL!")} style={{ padding: "16px 32px", background: C.bg, color: C.text, border: `4px solid ${C.border}`, fontWeight: 900, fontFamily: "var(--sans)", fontSize: 16, whiteSpace: "nowrap", textTransform: "uppercase" }}>
+            <MagBtn onClick={() => window.open("/swastikresume.pdf", "_blank")} style={{ padding: "16px 32px", background: C.bg, color: C.text, border: `4px solid ${C.border}`, fontWeight: 900, fontFamily: "var(--sans)", fontSize: 16, whiteSpace: "nowrap", textTransform: "uppercase" }}>
               View Resume ↗
             </MagBtn>
           </div>
