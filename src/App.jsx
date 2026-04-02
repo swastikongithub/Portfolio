@@ -880,7 +880,7 @@ export default function Portfolio() {
               Send Message ✦
             </MagBtn>
             <div style={{ marginTop: 40, display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
-              {[{ label: "GitHub", url: "https://github.com" }, { label: "LinkedIn", url: "https://linkedin.com" }, { label: "Email", url: "mailto:swastiksingh288@gmail.com" }].map(l => (
+              {[{ label: "GitHub", url: "https://github.com/swastikongithub" }, { label: "LinkedIn", url: "https://www.linkedin.com/in/swastiksin/" }, { label: "Email", url: "mailto:swastiksingh288@gmail.com" }].map(l => (
                 <a key={l.label} className="brutal-shadow-static" href={l.url} target="_blank" rel="noreferrer" style={{ fontFamily: "var(--sans)", fontSize: 14, color: C.bg, background: C.text, fontWeight: 900, textDecoration: "none", padding: "10px 24px", border: `2px solid ${C.border}`, textTransform: "uppercase", transition: "transform 0.1s, box-shadow 0.1s" }}
                   onMouseEnter={e => { e.currentTarget.style.transform = "translate(-2px,-2px)"; e.currentTarget.style.boxShadow = `4px 4px 0px ${C.accent}` }}
                   onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = `var(--shadow-brutal)` }}>
