@@ -29,7 +29,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
     })),
     { id: 'resume', title: 'View Resume (PDF)', category: 'Links', icon: ExternalLink, action: () => { window.open(PERSONAL_INFO.resume, '_blank'); onClose(); } },
     { id: 'github', title: 'GitHub Profile', category: 'Links', icon: ExternalLink, action: () => { window.open(PERSONAL_INFO.github, '_blank'); onClose(); } },
-    { id: 'linkedin', title: 'LinkedIn Profile', category: 'Links', icon: ExternalLink, action: () => { window.open(PERSONAL_INFO.linkedin, '_blank'); onClose(); } }
+    { id: 'linkedin', title: 'LinkedIn Profile', category: 'Links', icon: ExternalLink, action: () => { window.open(PERSONAL_INFO.linkedin, '_blank'); onClose(); } },
+    { id: 'instagram', title: 'Instagram Profile', category: 'Links', icon: ExternalLink, action: () => { window.open(PERSONAL_INFO.instagram, '_blank'); onClose(); } }
   ];
 
   const filteredItems = allItems.filter(item =>

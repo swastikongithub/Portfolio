@@ -119,7 +119,7 @@ Portfolio/
 ## 📬 Contact & Connect
 
 - **GitHub**: [https://github.com/swastikongithub](https://github.com/swastikongithub)
-- **LinkedIn**: [https://linkedin.com/in/swastik-singh](https://linkedin.com/in/swastik-singh)
+- **LinkedIn**: [https://www.linkedin.com/in/swastiksin/](https://www.linkedin.com/in/swastiksin/)
 - **Twitter / X**: [https://twitter.com/swastik_singh](https://twitter.com/swastik_singh)
 
 ---

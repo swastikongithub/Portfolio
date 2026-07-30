@@ -9,8 +9,9 @@ export const PERSONAL_INFO = {
   location: "India",
   email: "swastiksingh@example.com", // Realistic fallback email; user can replace
   github: "https://github.com/swastikongithub",
-  linkedin: "https://linkedin.com/in/swastik-singh",
+  linkedin: "https://www.linkedin.com/in/swastiksin/",
   twitter: "https://twitter.com/swastik_singh",
+  instagram: "https://www.instagram.com/swastik.mov/",
   resume: "/resume.pdf"
 };
 

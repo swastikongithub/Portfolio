@@ -21,7 +21,7 @@ export const Footer: React.FC = () => {
 
         {/* Bottom Social & Links */}
         <div className="flex flex-wrap items-center justify-between gap-6 text-xs font-mono uppercase tracking-widest">
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center gap-6">
             <a
               href={PERSONAL_INFO.github}
               target="_blank"
@@ -45,6 +45,14 @@ export const Footer: React.FC = () => {
               className="hover:text-[#FF4D2D] transition-colors"
             >
               Twitter
+            </a>
+            <a
+              href={PERSONAL_INFO.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#FF4D2D] transition-colors"
+            >
+              Instagram
             </a>
             <a
               href={PERSONAL_INFO.resume}

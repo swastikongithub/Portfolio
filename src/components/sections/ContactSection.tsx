@@ -55,7 +55,7 @@ export const ContactSection: React.FC = () => {
         </div>
 
         {/* Minimal Social Links */}
-        <div className="flex items-center gap-8 text-xs font-mono uppercase tracking-widest">
+        <div className="flex flex-wrap items-center gap-6 md:gap-8 text-xs font-mono uppercase tracking-widest">
           <a
             href={PERSONAL_INFO.github}
             target="_blank"
@@ -81,6 +81,15 @@ export const ContactSection: React.FC = () => {
             className="group flex items-center gap-1.5 hover:text-[#FF4D2D] transition-colors"
           >
             <span>TWITTER</span>
+            <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+          </a>
+          <a
+            href={PERSONAL_INFO.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center gap-1.5 hover:text-[#FF4D2D] transition-colors"
+          >
+            <span>INSTAGRAM</span>
             <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
           </a>
         </div>
