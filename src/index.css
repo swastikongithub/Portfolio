@@ -1,68 +1,82 @@
-:root {
-  --bg: #0d0d0d;
-  --bg-card: #1a1a1a;
-  --text: #ffffff;
-  --text-muted: #a1a1aa;
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-display: 'Outfit', system-ui, -apple-system, sans-serif;
+    --font-sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --bg-light: #FAFAFA;
+    --text-light: #111111;
+    --muted-light: #666666;
+    --border-light: #1F1F1F;
+    --accent: #FF4D2D;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #FAFAFA;
+    color: #111111;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .dark body {
+    background-color: #0A0A0A;
+    color: #F5F5F5;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.03em;
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+/* Luxury Swiss Editorial utilities */
+@layer utilities {
+  .editorial-border {
+    border-color: #1F1F1F;
+  }
+  .dark .editorial-border {
+    border-color: rgba(255, 255, 255, 0.15);
+  }
   
-  --accent: #ff00ff; /* Neon Pink */
-  --accent-light: #ff66ff;
-  --accent-soft: #330033;
-  --border: #ffffff;
-  --tag: #ffff00;
-  --tag-text: #000000;
-  --green: #00ff66;
-  --green-light: #003314;
-  --blue: #00ffff;
-  
-  --shadow-brutal: 4px 4px 0px 0px #ffffff;
-  --shadow-brutal-hover: 2px 2px 0px 0px #ffffff;
-  --border-brutal: 3px solid #ffffff;
+  .editorial-divider {
+    height: 1px;
+    background-color: #1F1F1F;
+  }
+  .dark .editorial-divider {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
 
-  --sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  /* Custom subtle scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(102, 102, 102, 0.3);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #FF4D2D;
+  }
 }
 
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--sans);
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Smooth fade in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-#root {
-  width: 100%;
-  margin: 0 auto;
-  text-align: left;
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-/* Brutalist Utilities */
-.brutal-border {
-  border: var(--border-brutal);
-}
-
-.brutal-shadow {
-  box-shadow: var(--shadow-brutal);
-  transition: transform 0.1s, box-shadow 0.1s;
-}
-
-.brutal-shadow:hover {
-  box-shadow: var(--shadow-brutal-hover);
-  transform: translate(2px, 2px);
-}
-
-.brutal-shadow-static {
-  box-shadow: var(--shadow-brutal);
-}
-
-code, .counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  color: var(--text);
+.animate-fade-in {
+  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
