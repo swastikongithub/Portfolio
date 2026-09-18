@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef } from 'react';
+import { ScrollTrigger, gsap, useGSAP } from '../../lib/motion';
 
-export const ScrollProgress: React.FC = () => {
-  const [progress, setProgress] = useState(0);
+/** Reading-progress hairline. Written straight to a transform — no React re-render per scroll. */
+export const ScrollProgress: React.FC<{ routeKey: string }> = ({ routeKey }) => {
+  const bar = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
-      if (scrollTotal > 0) {
-        setProgress((window.scrollY / scrollTotal) * 100);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  useGSAP(
+    () => {
+      const setX = gsap.quickSetter(bar.current, 'scaleX');
+      setX(0);
+      ScrollTrigger.create({
+        start: 0,
+        end: 'max',
+        onUpdate: (self) => setX(self.progress),
+      });
+    },
+    { dependencies: [routeKey], revertOnUpdate: true },
+  );
 
   return (
-    <div className="fixed top-0 left-0 right-0 h-[2px] z-[60] bg-transparent pointer-events-none">
-      <div
-        className="h-full bg-[#FF4D2D] transition-all duration-150 ease-out"
-        style={{ width: `${progress}%` }}
-      />
+    <div className="fixed inset-x-0 top-0 z-[70] h-[2px] pointer-events-none" aria-hidden="true">
+      <div ref={bar} className="h-full origin-left bg-accent" style={{ transform: 'scaleX(0)' }} />
     </div>
   );
 };

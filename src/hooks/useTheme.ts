@@ -1,32 +1,58 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useState } from 'react';
+import { flushSync } from 'react-dom';
+import { prefersReducedMotion } from '../lib/motion';
 
-type Theme = 'light' | 'dark';
+export type Theme = 'light' | 'dark';
+
+const STORAGE_KEY = 'portfolio-theme';
+
+function readTheme(): Theme {
+  // index.html has already applied the resolved theme before first paint.
+  return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+}
+
+function applyTheme(theme: Theme) {
+  const root = document.documentElement;
+  root.classList.toggle('dark', theme === 'dark');
+  root.style.colorScheme = theme;
+  try {
+    localStorage.setItem(STORAGE_KEY, theme);
+  } catch {
+    /* storage unavailable (private mode) — the choice just won't persist */
+  }
+}
+
+type ViewTransitionDocument = Document & {
+  startViewTransition?: (cb: () => void) => unknown;
+};
 
 export function useTheme() {
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('portfolio-theme') as Theme;
-      if (saved === 'light' || saved === 'dark') {
-        return saved;
-      }
-      return 'light'; // Default to Swiss Editorial Light mode (#FAFAFA)
-    }
-    return 'light';
-  });
+  const [theme, setTheme] = useState<Theme>(readTheme);
 
-  useEffect(() => {
+  const toggleTheme = useCallback(() => {
+    const next: Theme = readTheme() === 'dark' ? 'light' : 'dark';
+    const commit = () => {
+      applyTheme(next);
+      flushSync(() => setTheme(next));
+    };
+
+    if (prefersReducedMotion()) {
+      commit();
+      return;
+    }
+
+    const doc = document as ViewTransitionDocument;
+    if (typeof doc.startViewTransition === 'function') {
+      // Page-turn wipe (see ::view-transition-new in index.css).
+      doc.startViewTransition(commit);
+      return;
+    }
+
     const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-    localStorage.setItem('portfolio-theme', theme);
-  }, [theme]);
+    root.classList.add('theme-anim');
+    commit();
+    window.setTimeout(() => root.classList.remove('theme-anim'), 500);
+  }, []);
 
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
-  };
-
-  return { theme, toggleTheme, setTheme };
+  return { theme, toggleTheme };
 }

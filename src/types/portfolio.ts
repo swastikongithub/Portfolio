@@ -1,43 +1,81 @@
+export type ProjectSlug = 'vulntrack' | 'tenora' | 'ai-interview-platform';
+
+/** Which data figure (drawn from the project's real code/docs) a project shows. */
+export type ProjectFigure = 'permission-matrix' | 'money-flows' | 'resume-pipeline';
+
+export interface Decision {
+  title: string;
+  body: string;
+}
+
+export interface ArchitectureLayer {
+  name: string;
+  detail: string;
+}
+
+export interface StackGroup {
+  group: string;
+  items: string[];
+}
+
 export interface ProjectCaseStudy {
-  id: string;
+  slug: ProjectSlug;
   number: string;
   title: string;
-  subtitle: string;
+  kind: string;
+  period: string;
+  status: string;
+  /** One-sentence standfirst, shown under the title. */
+  deck: string;
+  /** Short summary for the command palette, contents and metadata. */
   summary: string;
   problem: string;
-  architecture: string;
-  architectureHighlights: string[];
-  technologies: string[];
-  features: string[];
-  challenges: string[];
-  learnings: string[];
-  githubUrl?: string;
-  liveUrl?: string;
-  year: string;
-  category: string;
+  /** The 3–4 strongest pieces of work, shown on the home page spread. */
+  built: string[];
+  /** The one decision featured on the home page. */
+  keyDecision: Decision;
+  architecture: { intro: string; layers: ArchitectureLayer[] };
+  decisions: Decision[];
+  safeguards: string[];
+  /** What is deliberately not built yet, or known gaps. */
+  scope: string[];
+  stack: StackGroup[];
+  stackShort: string[];
+  links: { source: string; live?: string; liveNote?: string };
+  figure: ProjectFigure;
+  figureCaption: string;
+  /** Spread composition on the home page, varied so the three don't repeat. */
+  layout: 'figure-right' | 'figure-left' | 'figure-wide';
 }
 
-export type MilestoneCategory = 'Education' | 'Patent' | 'Achievement' | 'Certification';
+export interface EducationEntry {
+  period: string;
+  institution: string;
+  place: string;
+  qualification: string;
+  result?: string;
+}
 
-export interface Milestone {
-  id: string;
-  year: string;
+export interface Credential {
+  date: string;
   title: string;
-  organization: string;
-  description: string;
-  category: MilestoneCategory;
-  highlight?: string;
+  issuer?: string;
+  note?: string;
 }
 
-export type SkillCategory = 'Backend' | 'Cloud & DevOps' | 'Database & Storage' | 'Frontend & Core';
-
-export interface SkillGroup {
-  category: SkillCategory;
-  skills: string[];
+export interface ToolEntry {
+  name: string;
+  /** Case-study numbers the tool was used in; empty = from CV/coursework. */
+  usedIn: string[];
 }
 
-export interface NavigationItem {
+export interface ToolGroup {
+  discipline: string;
+  tools: ToolEntry[];
+}
+
+export interface SectionLink {
+  id: string;
+  number: string;
   label: string;
-  href: string;
-  isExternal?: boolean;
 }

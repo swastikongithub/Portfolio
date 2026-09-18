@@ -1,65 +1,60 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { PERSONAL_INFO } from '../../data/portfolioData';
+import { useReveal } from '../../hooks/useReveal';
+import { EditorialImage } from '../ui/EditorialImage';
+import { SectionHead } from '../ui/SectionHead';
+import portrait from '../../assets/portfoliopic.jpeg';
+
+const FACTS: [string, string][] = [
+  ['Studying', 'B.Tech, Computer Science and Engineering — Lovely Professional University'],
+  ['Focus', 'Backend and systems work, security, full-stack delivery'],
+  ['Building now', 'VulnTrack'],
+  ['Based in', PERSONAL_INFO.location],
+];
 
 export const AboutSection: React.FC = () => {
+  const root = useRef<HTMLElement>(null);
+  useReveal(root);
+
   return (
-    <section id="about" className="py-24 md:py-36 max-w-7xl mx-auto px-6 md:px-12">
-      {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 md:mb-24 pb-8 border-b border-[#1F1F1F]/10 dark:border-white/10 gap-6">
-        <div>
-          <span className="text-xs font-mono uppercase tracking-widest text-[#FF4D2D] block mb-2">
-            05 // PHILOSOPHY & CRAFTSMANSHIP
-          </span>
-          <h2 className="font-display font-extrabold text-5xl md:text-8xl tracking-tighter uppercase text-[#111111] dark:text-[#F5F5F5]">
-            ENGINEERING ETHOS
-          </h2>
-        </div>
-        <p className="max-w-md text-xs md:text-sm font-mono uppercase tracking-widest text-[#666666] dark:text-[#888888]">
-          BUILDING DISTRIBUTED BACKENDS WITH CLARITY, RELIABILITY & INTENT
-        </p>
-      </div>
+    <section id="about" ref={root} aria-labelledby="about-title" className="frame pt-12 md:pt-20 pb-24 md:pb-36">
+      <SectionHead id="about" number="02" kicker="About" lines={['A student', ['of failure modes.', 't-serif normal-case !font-normal !tracking-[-0.01em]']]} />
 
-      {/* Editorial Magazine Typography Spread */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-        {/* Left Column (5 cols): Genuine Approach Statement */}
-        <div className="lg:col-span-5 flex flex-col justify-between h-full gap-8">
-          <div className="border-l-2 border-[#FF4D2D] pl-6 py-1">
-            <h3 className="font-display font-bold text-2xl md:text-4xl leading-tight text-[#111111] dark:text-[#F5F5F5]">
-              &ldquo;Software architecture is not about adding layers until it looks enterprise—it is about removing friction until the system cannot fail.&rdquo;
-            </h3>
-          </div>
+      <div className="grid-12 gap-y-12 items-start">
+        <EditorialImage
+          src={portrait}
+          alt="Portrait of Swastik Singh in a dark blazer and glasses"
+          width={896}
+          height={1195}
+          caption="The author, 2026."
+          className="col-span-4 md:col-span-5 lg:col-span-4"
+        />
 
-          <div className="flex items-center gap-4 text-xs font-mono uppercase tracking-widest text-[#666666] dark:text-[#888888]">
-            <span>SWASTIK SINGH</span>
-            <span>//</span>
-            <span>BACKEND ENGINEER</span>
-          </div>
-        </div>
-
-        {/* Right Column (7 cols): Editorial Narrative */}
-        <div className="lg:col-span-7 flex flex-col gap-8 text-base md:text-xl font-light leading-relaxed text-[#111111] dark:text-[#F5F5F5]">
-          <p>
-            My engineering work centers on distributed systems, concurrent transaction handling, and resilient queue-based pipelines. Whether designing an email scheduling engine capable of handling high-volume retries or architecting secure cryptographic file storage systems, my focus is always on data integrity and clean execution.
+        <div className="col-span-4 md:col-span-7 lg:col-span-7 lg:col-start-6">
+          <p className="t-deck" data-reveal>
+            I’m Swastik Singh, a Computer Science and Engineering undergraduate at Lovely Professional University.
           </p>
-          <p className="text-[#666666] dark:text-[#888888]">
-            I believe the best backend systems are invisible to the user—they operate with predictable latency, recover gracefully from network partitions, and remain maintainable as requirements evolve.
-          </p>
-
-          {/* Quick Stat / Focus Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 pt-8 border-t border-[#1F1F1F]/10 dark:border-white/10">
-            <div>
-              <span className="font-mono text-xs text-[#FF4D2D] block mb-1">PRIMARY DOMAIN</span>
-              <span className="font-display font-bold text-lg">Backend Systems</span>
-            </div>
-            <div>
-              <span className="font-mono text-xs text-[#FF4D2D] block mb-1">CORE LANGUAGES</span>
-              <span className="font-display font-bold text-lg">Java &bull; TS &bull; Python</span>
-            </div>
-            <div>
-              <span className="font-mono text-xs text-[#FF4D2D] block mb-1">STATUS</span>
-              <span className="font-display font-bold text-lg">Open for Roles</span>
-            </div>
+          <div className="mt-8 space-y-5 t-body max-w-[60ch]">
+            <p data-reveal>
+              I’m most interested in the parts of software that are easy to get subtly wrong: who is allowed to do
+              what, what happens when two requests race, what a webhook delivered twice should do. My projects are
+              where I practise that — each is tested against its failure cases, and each documents its known gaps
+              instead of hiding them.
+            </p>
+            <p data-reveal className="text-muted">
+              Right now I’m building VulnTrack. I’m looking for internships and software engineering roles where that
+              kind of care is useful.
+            </p>
           </div>
+
+          <dl className="mt-12 border-t border-ink" data-reveal>
+            {FACTS.map(([term, value]) => (
+              <div key={term} className="grid grid-cols-[8.5rem_1fr] gap-4 border-b border-rule py-3.5">
+                <dt className="t-label text-muted pt-0.5">{term}</dt>
+                <dd className="text-[0.98rem] font-[520]">{value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </div>
     </section>

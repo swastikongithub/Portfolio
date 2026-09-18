@@ -1,87 +1,161 @@
-import React from 'react';
-import { PERSONAL_INFO } from '../../data/portfolioData';
-import { EditorialImage } from '../ui/EditorialImage';
-import { ArrowDown, ArrowUpRight } from 'lucide-react';
-import portraitImg from '../../assets/portfoliopic.jpeg';
+import React, { useRef } from 'react';
+import { PERSONAL_INFO, PROJECTS } from '../../data/portfolioData';
+import { useSite } from '../../context/site';
+import { EASE, MOTION_OK, gsap, useGSAP } from '../../lib/motion';
+import { TransitionLink } from '../ui/TransitionLink';
 
+/**
+ * The cover. Reads like the opening spread of a technical journal: masthead,
+ * the name set as the title, a thesis, and a table of contents that is also
+ * the primary way into the work. Everything is legible in its final position;
+ * the intro only choreographs how it is "set" onto the page.
+ */
 export const HeroSection: React.FC = () => {
-  const scrollToWork = () => {
-    document.querySelector('#work')?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const { scrollToSection } = useSite();
+  const root = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+
+      mm.add(MOTION_OK, () => {
+        gsap
+          .timeline({ defaults: { ease: EASE.out } })
+          .fromTo('[data-intro-rule]', { scaleX: 0 }, { scaleX: 1, transformOrigin: 'left center', duration: 1, ease: EASE.press, stagger: 0.1 })
+          .fromTo('[data-cover-line]', { yPercent: 104 }, { yPercent: 0, duration: 1.15, stagger: 0.12 }, 0.1)
+          .fromTo('[data-intro]', { y: 18, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.06 }, 0.45)
+          .fromTo('[data-intro-row]', { x: -24, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.8, stagger: 0.07 }, 0.6);
+      });
+
+      // As the cover leaves, the two name lines are pulled apart — type drawn off the press.
+      mm.add(`${MOTION_OK} and (min-width: 768px)`, () => {
+        const scrub = { trigger: root.current, start: 'top top', end: 'bottom top', scrub: 0.6 };
+        gsap.to('[data-drift="l"]', { xPercent: -7, ease: 'none', scrollTrigger: scrub });
+        gsap.to('[data-drift="r"]', { xPercent: 5, ease: 'none', scrollTrigger: scrub });
+      });
+
+      return () => mm.revert();
+    },
+    { scope: root },
+  );
 
   return (
-    <section className="relative min-h-screen w-full flex flex-col justify-between pt-28 md:pt-36 pb-12 md:pb-20 max-w-7xl mx-auto px-6 md:px-12">
-      {/* Top Metadata Row: Swiss Grid Journal Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs font-mono uppercase tracking-widest text-[#666666] dark:text-[#888888] pb-6 border-b border-[#1F1F1F]/10 dark:border-white/10">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 bg-[#FF4D2D] rounded-full inline-block" />
-          <span>PORTFOLIO // VOL. 2026</span>
+    <section ref={root} aria-labelledby="cover-title" className="relative flex min-h-[100svh] flex-col pt-[var(--header-h)] overflow-hidden">
+      <div className="frame relative flex flex-1 flex-col">
+        {/* Registration marks */}
+        <span className="reg -left-[7px] top-3 hidden md:block" aria-hidden="true" />
+        <span className="reg -right-[7px] top-3 hidden md:block" aria-hidden="true" />
+
+        {/* Masthead */}
+        <div className="relative mt-3 grid-12 items-center py-3 t-label">
+          <span className="absolute inset-x-0 bottom-0 h-px bg-rule" data-intro-rule aria-hidden="true" />
+          <span className="col-span-2 md:col-span-3" data-intro>
+            Portfolio — Ed. 2026
+          </span>
+          <span className="hidden md:block md:col-span-5 text-muted" data-intro>
+            Software engineering · Backend &amp; systems
+          </span>
+          <span className="hidden lg:block lg:col-span-2 text-muted" data-intro>
+            B.Tech CSE · LPU
+          </span>
+          <span className="col-span-2 md:col-span-4 lg:col-span-2 text-right" data-intro>
+            {PERSONAL_INFO.location}
+          </span>
         </div>
-        <span>BACKEND ENGINEERING • SYSTEM ARCHITECTURE</span>
-        <span>BASED IN INDIA</span>
-      </div>
 
-      {/* Main Asymmetrical Editorial Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center my-auto py-8">
-        {/* Left Column (7 cols): Massive Display Typography & Authentic Personal Intro */}
-        <div className="lg:col-span-7 flex flex-col justify-center">
-          <div className="mb-6">
-            <span className="text-xs font-mono uppercase tracking-widest text-[#FF4D2D] block mb-2">
-              ENGINEERING CRAFTSMANSHIP
+        {/* Title */}
+        <div className="relative mt-[4vh] md:mt-[5vh]">
+          <h1 id="cover-title" tabIndex={-1} className="t-mega outline-none">
+            <span className="sr-only">{PERSONAL_INFO.name}</span>
+            <span aria-hidden="true" className="block overflow-hidden pb-[0.04em]">
+              <span data-drift="l" className="block">
+                <span data-cover-line className="block">
+                  {PERSONAL_INFO.firstName}
+                </span>
+              </span>
             </span>
-            <h1 className="font-display font-extrabold text-[15vw] lg:text-[9.5rem] leading-[0.88] tracking-tighter text-[#111111] dark:text-[#F5F5F5]">
-              SWASTIK
-            </h1>
-          </div>
+            <span aria-hidden="true" className="block overflow-hidden pb-[0.04em] md:pl-[34%]">
+              <span data-drift="r" className="block">
+                <span data-cover-line className="block">
+                  {PERSONAL_INFO.lastName}
+                  <span className="text-accent">.</span>
+                </span>
+              </span>
+            </span>
+          </h1>
+          <p
+            className="t-serif italic mt-5 mb-10 md:mb-0 text-[1.2rem] leading-[1.2] text-muted md:absolute md:left-0 md:bottom-[4%] md:mt-0 md:w-[30%] md:text-[clamp(1.1rem,1.55vw,1.6rem)]"
+            data-intro
+          >
+            {PERSONAL_INFO.role}, Computer Science student, building systems that have to hold up.
+          </p>
+        </div>
 
-          {/* Personal & Authentic Intro (Replacing generic placeholder text) */}
-          <div className="max-w-xl">
-            <p className="text-lg md:text-2xl font-light leading-relaxed text-[#111111] dark:text-[#F5F5F5] mb-8">
-              A computer science student and backend developer obsessed with simplicity, reliability, and architectural clarity. I build distributed systems, clean APIs, and secure backend architectures without unnecessary complexity.
+        {/* Thesis + contents */}
+        <div className="relative mt-auto grid-12 gap-y-10 pt-8 pb-8 md:pb-10">
+          <span className="absolute inset-x-0 top-0 h-[2px] bg-ink" data-intro-rule aria-hidden="true" />
+
+          <div className="col-span-4 md:col-span-6 lg:col-span-5 flex flex-col gap-6">
+            <p className="t-deck max-w-[22ch]" data-intro>
+              {PERSONAL_INFO.headline}
             </p>
-
-            {/* Oversized CTA Button */}
-            <div className="flex flex-wrap items-center gap-6">
-              <button
-                onClick={scrollToWork}
-                className="group inline-flex items-center gap-4 px-8 py-4 bg-[#111111] dark:bg-[#F5F5F5] text-[#FAFAFA] dark:text-[#111111] text-xs md:text-sm font-mono uppercase tracking-widest hover:bg-[#FF4D2D] dark:hover:bg-[#FF4D2D] dark:hover:text-white transition-all duration-300 rounded-none"
-              >
-                <span>EXPLORE WORK</span>
-                <ArrowDown className="w-4 h-4 group-hover:translate-y-1 transition-transform" />
-              </button>
-
+            <p className="t-body text-muted max-w-[44ch]" data-intro>
+              Tenant boundaries, sessions, webhooks, state machines, background jobs. Three case studies follow — each
+              written from the code itself.
+            </p>
+            <div className="flex flex-wrap gap-3" data-intro>
               <a
-                href={PERSONAL_INFO.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group inline-flex items-center gap-2 text-xs md:text-sm font-mono uppercase tracking-widest text-[#111111] dark:text-[#F5F5F5] hover:text-[#FF4D2D] dark:hover:text-[#FF4D2D] transition-colors py-2"
+                href="#work"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection('work');
+                }}
+                className="btn btn-solid"
               >
-                <span>GITHUB REPOSITORY</span>
-                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                Read the work <span aria-hidden="true">↓</span>
+              </a>
+              <a href={PERSONAL_INFO.resume} target="_blank" rel="noopener noreferrer" className="btn">
+                Résumé <span className="arrow" aria-hidden="true">↗</span>
+                <span className="sr-only">(PDF, opens in a new tab)</span>
               </a>
             </div>
           </div>
-        </div>
 
-        {/* Right Column (5 cols): Massive High-Contrast Portrait */}
-        <div className="lg:col-span-5 w-full max-w-md mx-auto lg:max-w-none">
-          <EditorialImage
-            src={portraitImg}
-            alt="Swastik Singh portrait"
-            aspectRatio="portrait"
-            badge="01 // ARCHITECT"
-            className="w-full shadow-2xl"
-          />
+          <nav aria-labelledby="contents-label" className="col-span-4 md:col-span-6 lg:col-span-6 lg:col-start-7">
+            <p id="contents-label" className="t-label text-muted mb-2" data-intro>
+              Contents
+            </p>
+            <ol className="border-t border-rule">
+              {PROJECTS.map((p) => (
+                <li key={p.slug} className="border-b border-rule" data-intro-row>
+                  <TransitionLink
+                    to={`/projects/${p.slug}`}
+                    curtainLabel={p.title}
+                    className="group relative isolate grid grid-cols-[2.5rem_1fr_auto] md:grid-cols-[3rem_1fr_auto_auto] items-baseline gap-3 py-4 md:py-5 px-1 overflow-hidden"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-0 -z-10 bg-ink origin-bottom scale-y-0 transition-transform duration-500 ease-[var(--ease-press)] group-hover:scale-y-100 group-focus-visible:scale-y-100"
+                    />
+                    <span className="t-label text-accent-text group-hover:text-accent transition-colors">{p.number}</span>
+                    <span className="t-head transition-colors duration-300 group-hover:text-paper group-focus-visible:text-paper">
+                      {p.title}
+                    </span>
+                    <span className="hidden md:block t-label text-muted transition-colors group-hover:text-paper/70">
+                      {p.kind}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="arrow text-lg transition-[color,transform] group-hover:text-accent group-hover:translate-x-1"
+                    >
+                      →
+                    </span>
+                  </TransitionLink>
+                </li>
+              ))}
+            </ol>
+          </nav>
         </div>
-      </div>
-
-      {/* Bottom Editorial Scroll Indicator */}
-      <div className="flex items-center justify-between pt-6 border-t border-[#1F1F1F]/10 dark:border-white/10 text-xs font-mono uppercase tracking-widest text-[#666666] dark:text-[#888888]">
-        <div className="flex items-center gap-3">
-          <span className="w-1.5 h-1.5 bg-[#FF4D2D] rounded-full animate-ping" />
-          <span>SCROLL FOR REAL ENGINEERING CASE STUDIES</span>
-        </div>
-        <span className="hidden sm:inline">01 / 05 // INDEX</span>
       </div>
     </section>
   );

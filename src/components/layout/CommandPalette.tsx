@@ -1,138 +1,221 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { PROJECTS, PERSONAL_INFO } from '../../data/portfolioData';
-import { Search, ArrowRight, Folder, User, Mail, FileText, ExternalLink, Code } from 'lucide-react';
+import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { PERSONAL_INFO, PROJECTS, SECTIONS } from '../../data/portfolioData';
+import { useSite } from '../../context/site';
+import { EASE, gsap } from '../../lib/motion';
+import { trapTab } from '../../lib/focus';
 
 interface CommandPaletteProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
+interface Command {
+  id: string;
+  group: 'Case studies' | 'Sections' | 'Actions' | 'Links';
+  label: string;
+  hint?: string;
+  keywords?: string;
+  run: () => void;
+  /** Keep the palette open after running (e.g. copy to clipboard). */
+  keepOpen?: boolean;
+}
+
+export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) =>
+  isOpen ? <PaletteDialog onClose={onClose} /> : null;
+
+const openExternal = (url: string) => window.open(url, '_blank', 'noopener,noreferrer');
+
+const PaletteDialog: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+  const { transitionTo, scrollToSection, toggleTheme, toggleGrid, theme, setScrollLocked, reducedMotion } = useSite();
   const [query, setQuery] = useState('');
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const navigate = useNavigate();
+  const [active, setActive] = useState(0);
+  const [status, setStatus] = useState('');
+  const panelRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+  const returnFocus = useRef<HTMLElement | null>(
+    document.activeElement instanceof HTMLElement ? document.activeElement : null,
+  );
+  const listId = useId();
 
-  const allItems = [
-    { id: 'home', title: 'Home', category: 'Navigation', icon: User, action: () => { navigate('/'); onClose(); } },
-    { id: 'work', title: 'Work & Projects', category: 'Navigation', icon: Folder, action: () => { navigate('/'); setTimeout(() => { document.querySelector('#work')?.scrollIntoView({ behavior: 'smooth' }); }, 100); onClose(); } },
-    { id: 'about', title: 'About Swastik', category: 'Navigation', icon: User, action: () => { navigate('/'); setTimeout(() => { document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' }); }, 100); onClose(); } },
-    { id: 'skills', title: 'Technical Skills', category: 'Navigation', icon: Code, action: () => { navigate('/'); setTimeout(() => { document.querySelector('#skills')?.scrollIntoView({ behavior: 'smooth' }); }, 100); onClose(); } },
-    { id: 'background', title: 'Education & Milestones', category: 'Navigation', icon: FileText, action: () => { navigate('/'); setTimeout(() => { document.querySelector('#background')?.scrollIntoView({ behavior: 'smooth' }); }, 100); onClose(); } },
-    { id: 'contact', title: 'Contact', category: 'Navigation', icon: Mail, action: () => { navigate('/'); setTimeout(() => { document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' }); }, 100); onClose(); } },
-    ...PROJECTS.map(p => ({
-      id: p.id,
-      title: `${p.number} // ${p.title}`,
-      category: 'Projects',
-      icon: Folder,
-      action: () => { navigate(`/projects/${p.id}`); onClose(); }
-    })),
-    { id: 'resume', title: 'View Resume (PDF)', category: 'Links', icon: ExternalLink, action: () => { window.open(PERSONAL_INFO.resume, '_blank'); onClose(); } },
-    { id: 'github', title: 'GitHub Profile', category: 'Links', icon: ExternalLink, action: () => { window.open(PERSONAL_INFO.github, '_blank'); onClose(); } },
-    { id: 'linkedin', title: 'LinkedIn Profile', category: 'Links', icon: ExternalLink, action: () => { window.open(PERSONAL_INFO.linkedin, '_blank'); onClose(); } },
-    { id: 'instagram', title: 'Instagram Profile', category: 'Links', icon: ExternalLink, action: () => { window.open(PERSONAL_INFO.instagram, '_blank'); onClose(); } }
-  ];
-
-  const filteredItems = allItems.filter(item =>
-    item.title.toLowerCase().includes(query.toLowerCase()) ||
-    item.category.toLowerCase().includes(query.toLowerCase())
+  const commands = useMemo<Command[]>(
+    () => [
+      ...PROJECTS.map<Command>((p) => ({
+        id: `project-${p.slug}`,
+        group: 'Case studies',
+        label: `${p.number} ${p.title}`,
+        hint: p.kind,
+        keywords: `${p.stackShort.join(' ')} ${p.summary}`,
+        run: () => transitionTo(`/projects/${p.slug}`, p.title),
+      })),
+      ...SECTIONS.map<Command>((s) => ({
+        id: `section-${s.id}`,
+        group: 'Sections',
+        label: s.label,
+        hint: `§ ${s.number}`,
+        run: () => scrollToSection(s.id),
+      })),
+      {
+        id: 'copy-email',
+        group: 'Actions',
+        label: 'Copy email address',
+        hint: PERSONAL_INFO.email,
+        keywords: 'contact mail',
+        keepOpen: true,
+        run: () => {
+          navigator.clipboard
+            ?.writeText(PERSONAL_INFO.email)
+            .then(() => setStatus(`Copied ${PERSONAL_INFO.email}`))
+            .catch(() => setStatus('Copy failed — the address is ' + PERSONAL_INFO.email));
+        },
+      },
+      {
+        id: 'theme',
+        group: 'Actions',
+        label: `Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`,
+        keywords: 'dark light mode colour color',
+        run: toggleTheme,
+      },
+      { id: 'grid', group: 'Actions', label: 'Toggle layout grid', hint: 'G', keywords: 'columns', run: toggleGrid },
+      { id: 'email', group: 'Links', label: 'Write an email', hint: 'mailto', run: () => void (window.location.href = `mailto:${PERSONAL_INFO.email}`) },
+      { id: 'resume', group: 'Links', label: 'Résumé (PDF)', hint: `Updated ${PERSONAL_INFO.resumeUpdated}`, keywords: 'cv', run: () => openExternal(PERSONAL_INFO.resume) },
+      { id: 'github', group: 'Links', label: 'GitHub', hint: 'swastikongithub', keywords: 'source code', run: () => openExternal(PERSONAL_INFO.github) },
+      { id: 'linkedin', group: 'Links', label: 'LinkedIn', hint: 'swastiksin', run: () => openExternal(PERSONAL_INFO.linkedin) },
+    ],
+    [transitionTo, scrollToSection, toggleTheme, toggleGrid, theme],
   );
 
-  useEffect(() => {
-    setSelectedIndex(0);
-  }, [query]);
+  const results = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return commands;
+    return commands.filter((c) => `${c.label} ${c.hint ?? ''} ${c.group} ${c.keywords ?? ''}`.toLowerCase().includes(q));
+  }, [commands, query]);
 
+  const activeIndex = Math.min(active, Math.max(results.length - 1, 0));
+
+  // Lock page scroll, animate in, restore focus to the opener on close.
   useEffect(() => {
-    if (!isOpen) {
-      setQuery('');
-      setSelectedIndex(0);
+    setScrollLocked(true);
+    const opener = returnFocus.current;
+    const panel = panelRef.current;
+    if (panel && !reducedMotion) {
+      gsap.fromTo(panel, { y: -16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.45, ease: EASE.out });
     }
-  }, [isOpen]);
+    return () => {
+      setScrollLocked(false);
+      opener?.focus?.();
+    };
+  }, [setScrollLocked, reducedMotion]);
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isOpen) return;
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        setSelectedIndex(i => (i + 1) % (filteredItems.length || 1));
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        setSelectedIndex(i => (i - 1 + (filteredItems.length || 1)) % (filteredItems.length || 1));
-      } else if (e.key === 'Enter' && filteredItems[selectedIndex]) {
-        e.preventDefault();
-        filteredItems[selectedIndex].action();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, filteredItems, selectedIndex]);
+    listRef.current
+      ?.querySelector<HTMLElement>(`[data-index="${activeIndex}"]`)
+      ?.scrollIntoView({ block: 'nearest' });
+  }, [activeIndex]);
 
-  if (!isOpen) return null;
+  const execute = (cmd: Command | undefined) => {
+    if (!cmd) return;
+    if (cmd.keepOpen) {
+      cmd.run();
+      return;
+    }
+    // Close first so smooth scroll is resumed before the command scrolls or navigates.
+    onClose();
+    requestAnimationFrame(() => cmd.run());
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      onClose();
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActive((activeIndex + 1) % Math.max(results.length, 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActive((activeIndex - 1 + results.length) % Math.max(results.length, 1));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      execute(results[activeIndex]);
+    } else {
+      trapTab(e, panelRef.current);
+    }
+  };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-24 px-4 bg-black/60 dark:bg-black/80 backdrop-blur-sm animate-fade-in">
-      {/* Click outside backdrop */}
-      <div className="absolute inset-0" onClick={onClose} />
-
-      {/* Editorial Modal Window */}
-      <div className="relative w-full max-w-2xl bg-[#FAFAFA] dark:bg-[#111111] border border-[#1F1F1F]/20 dark:border-white/20 shadow-2xl overflow-hidden">
-        {/* Search Input Bar */}
-        <div className="flex items-center px-5 py-4 border-b border-[#1F1F1F]/10 dark:border-white/10">
-          <Search className="w-5 h-5 text-[#666666] dark:text-[#888888] mr-3" />
+    <div className="fixed inset-0 z-[85] flex items-start justify-center px-3 pt-[10vh] sm:pt-[14vh]">
+      <div className="absolute inset-0 bg-ink/45" onClick={onClose} aria-hidden="true" />
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Command palette"
+        onKeyDown={onKeyDown}
+        className="relative w-full max-w-2xl bg-paper text-ink border-2 border-ink shadow-[10px_10px_0_0_var(--ink)]"
+      >
+        <div className="flex items-center gap-3 border-b border-rule px-5">
+          <span className="t-label text-accent-text" aria-hidden="true">⌘</span>
           <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search work, skills, or navigation..."
-            className="w-full bg-transparent text-sm md:text-base font-mono focus:outline-none text-[#111111] dark:text-white placeholder-[#666666] dark:placeholder-[#888888]"
             autoFocus
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setActive(0);
+            }}
+            placeholder="Jump to a case study, section or link…"
+            className="w-full bg-transparent py-5 text-lg sm:text-xl font-[500] outline-none placeholder:text-muted"
+            role="combobox"
+            aria-expanded="true"
+            aria-controls={listId}
+            aria-activedescendant={results[activeIndex] ? `${listId}-${results[activeIndex].id}` : undefined}
+            aria-autocomplete="list"
+            aria-label="Search commands"
           />
-          <kbd className="hidden sm:inline-block px-2 py-1 text-[10px] font-mono uppercase bg-[#111111]/5 dark:bg-white/10 text-[#666666] dark:text-[#888888]">
-            ESC
-          </kbd>
+          <button type="button" onClick={onClose} className="t-label text-muted hover:text-ink px-2 py-2">
+            Esc
+          </button>
         </div>
 
-        {/* List of actions */}
-        <div className="max-h-96 overflow-y-auto py-2">
-          {filteredItems.length === 0 ? (
-            <div className="px-5 py-8 text-center text-xs font-mono text-[#666666] dark:text-[#888888]">
-              NO RESULTS FOUND FOR &ldquo;{query}&rdquo;
-            </div>
-          ) : (
-            filteredItems.map((item, idx) => {
-              const Icon = item.icon;
-              const isSelected = idx === selectedIndex;
-              return (
-                <button
-                  key={item.id}
-                  onClick={item.action}
-                  onMouseEnter={() => setSelectedIndex(idx)}
-                  className={`w-full flex items-center justify-between px-5 py-3 text-left transition-colors font-mono text-xs md:text-sm ${
-                    isSelected
-                      ? 'bg-[#FF4D2D] text-white'
-                      : 'text-[#111111] dark:text-[#F5F5F5] hover:bg-[#111111]/5 dark:hover:bg-white/5'
+        <ul ref={listRef} id={listId} role="listbox" aria-label="Commands" className="max-h-[52vh] overflow-y-auto py-2" data-lenis-prevent>
+          {results.length === 0 && (
+            <li className="px-5 py-10 text-center text-muted" role="presentation">
+              Nothing matches “{query}”.
+            </li>
+          )}
+          {results.map((cmd, i) => {
+            const header = i === 0 || results[i - 1].group !== cmd.group ? cmd.group : null;
+            const selected = i === activeIndex;
+            return (
+              <React.Fragment key={cmd.id}>
+                {header && (
+                  <li role="presentation" className="t-label text-muted px-5 pt-4 pb-1.5">
+                    {header}
+                  </li>
+                )}
+                <li
+                  id={`${listId}-${cmd.id}`}
+                  role="option"
+                  aria-selected={selected}
+                  data-index={i}
+                  onMouseMove={() => active !== i && setActive(i)}
+                  onClick={() => execute(cmd)}
+                  className={`mx-2 flex cursor-pointer items-center justify-between gap-4 px-3 py-2.5 ${
+                    selected ? 'bg-ink text-paper' : ''
                   }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <Icon className={`w-4 h-4 ${isSelected ? 'text-white' : 'text-[#666666] dark:text-[#888888]'}`} />
-                    <span>{item.title}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className={`text-[10px] uppercase tracking-wider ${isSelected ? 'text-white/80' : 'text-[#666666] dark:text-[#888888]'}`}>
-                      {item.category}
-                    </span>
-                    {isSelected && <ArrowRight className="w-3.5 h-3.5" />}
-                  </div>
-                </button>
-              );
-            })
-          )}
-        </div>
+                  <span className="flex items-center gap-3 min-w-0">
+                    <span className={`w-1.5 h-1.5 shrink-0 ${selected ? 'bg-accent' : 'bg-transparent'}`} aria-hidden="true" />
+                    <span className="truncate font-[560]">{cmd.label}</span>
+                  </span>
+                  {cmd.hint && <span className={`t-label truncate ${selected ? 'opacity-70' : 'text-muted'}`}>{cmd.hint}</span>}
+                </li>
+              </React.Fragment>
+            );
+          })}
+        </ul>
 
-        {/* Footer info */}
-        <div className="px-5 py-2.5 bg-[#111111]/5 dark:bg-white/5 border-t border-[#1F1F1F]/10 dark:border-white/10 flex items-center justify-between text-[10px] font-mono uppercase text-[#666666] dark:text-[#888888]">
-          <span>Use ↑↓ to navigate • Enter to select</span>
-          <span>SWASTIK // COMMAND</span>
+        <div className="flex items-center justify-between gap-4 border-t border-rule px-5 py-2.5 t-label text-muted">
+          <span aria-live="polite">{status || '↑ ↓ to move · Enter to open'}</span>
+          <span className="hidden sm:inline">Swastik Singh / Index</span>
         </div>
       </div>
     </div>

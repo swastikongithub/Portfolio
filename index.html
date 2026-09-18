@@ -1,16 +1,84 @@
 <!doctype html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Swastik Singh — Software Engineer</title>
+    <meta
+      name="description"
+      content="Swastik Singh — Computer Science and Engineering student building backend-heavy systems: VulnTrack, Tenora and an AI Interview Platform, written up as engineering case studies."
+    />
+    <link rel="canonical" href="https://portfolio-swastiksingh.vercel.app/" />
+    <meta name="author" content="Swastik Singh" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Swastik Singh" />
+    <meta property="og:title" content="Swastik Singh — Software Engineer" />
+    <meta
+      property="og:description"
+      content="Case studies in tenant isolation, session security, idempotent webhooks and background processing."
+    />
+    <meta property="og:url" content="https://portfolio-swastiksingh.vercel.app/" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="theme-color" content="#F2F0EB" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0C0C0B" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script>
+      // Resolve the theme before first paint so there is no flash of the wrong palette.
+      (function () {
+        var d = document.documentElement;
+        d.classList.add('js');
+        var theme = null;
+        try { theme = localStorage.getItem('portfolio-theme'); } catch (e) {}
+        if (theme !== 'light' && theme !== 'dark') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        if (theme === 'dark') d.classList.add('dark');
+        d.style.colorScheme = theme;
+      })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-    <title>SWASTIK — Software Engineer • Backend Developer</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* Static first frame: visible without JavaScript, replaced when the app mounts. */
+      .boot { min-height: 100svh; padding: 88px clamp(16px, 3vw, 40px) 40px; box-sizing: border-box;
+        display: flex; flex-direction: column; justify-content: space-between; gap: 32px;
+        background: #F2F0EB; color: #101010; font-family: Archivo, system-ui, sans-serif; }
+      .dark .boot { background: #0C0C0B; color: #ECEAE4; }
+      .boot h1 { margin: 0; font-size: clamp(4rem, 19vw, 21rem); line-height: .82; font-weight: 800;
+        font-stretch: 72%; letter-spacing: -.04em; text-transform: uppercase; }
+      .boot p { max-width: 36ch; font-size: 1.25rem; line-height: 1.4; margin: 0 0 16px; }
+      .boot a { color: inherit; margin-right: 20px; font-size: .95rem; }
+      .js .boot { visibility: hidden; animation: boot-reveal 0s 3s forwards; }
+      @keyframes boot-reveal { to { visibility: visible; } }
+    </style>
   </head>
-  <body class="bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#111111] dark:text-[#F5F5F5] antialiased selection:bg-[#FF4D2D] selection:text-white transition-colors duration-300">
-    <div id="root"></div>
+  <body>
+    <div id="root">
+      <main class="boot">
+        <h1>Swastik<br />Singh</h1>
+        <div>
+          <p>Software engineer and Computer Science student. I build the parts of software that have to be right.</p>
+          <p>
+            <a href="/projects/vulntrack">01 VulnTrack</a>
+            <a href="/projects/tenora">02 Tenora</a>
+            <a href="/projects/ai-interview-platform">03 AI Interview Platform</a>
+          </p>
+          <p>
+            <a href="mailto:swastiksingh288@gmail.com">swastiksingh288@gmail.com</a>
+            <a href="https://github.com/swastikongithub">GitHub</a>
+            <a href="https://www.linkedin.com/in/swastiksin/">LinkedIn</a>
+            <a href="/swastik-singh-resume.pdf">Résumé (PDF)</a>
+          </p>
+        </div>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

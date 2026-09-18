@@ -1,27 +1,31 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-export function useCommandPalette() {
+const isTyping = (target: EventTarget | null) =>
+  target instanceof HTMLElement &&
+  (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName));
+
+/** Open state for the command palette plus the global keyboard shortcuts. */
+export function useCommandPalette(onToggleGrid: () => void) {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const onKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         setIsOpen((prev) => !prev);
+        return;
       }
-      if (e.key === 'Escape' && isOpen) {
-        setIsOpen(false);
+      if (e.key.toLowerCase() === 'g' && !e.metaKey && !e.ctrlKey && !e.altKey && !isTyping(e.target)) {
+        onToggleGrid();
       }
     };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen]);
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [onToggleGrid]);
 
   return {
     isOpen,
-    open: () => setIsOpen(true),
-    close: () => setIsOpen(false),
-    toggle: () => setIsOpen((prev) => !prev),
+    open: useCallback(() => setIsOpen(true), []),
+    close: useCallback(() => setIsOpen(false), []),
   };
 }

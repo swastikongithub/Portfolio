@@ -1,72 +1,42 @@
 import React from 'react';
 import { PERSONAL_INFO } from '../../data/portfolioData';
+import { useSite } from '../../context/site';
 
+const SOCIAL: [label: string, href: string][] = [
+  ['GitHub', PERSONAL_INFO.github],
+  ['LinkedIn', PERSONAL_INFO.linkedin],
+  ['Instagram', PERSONAL_INFO.instagram],
+];
+
+/** The colophon: credits and links. */
 export const Footer: React.FC = () => {
+  const { scrollToSection } = useSite();
+
   return (
-    <footer className="w-full py-16 md:py-24 border-t border-[#1F1F1F]/10 dark:border-white/10 bg-[#FAFAFA] dark:bg-[#0A0A0A] overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col justify-between gap-16">
-        {/* Top bar: concise copyright & editorial badge */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs font-mono uppercase tracking-widest text-[#666666] dark:text-[#888888]">
-          <span>© 2026 SWASTIK SINGH — ALL RIGHTS RESERVED</span>
-          <span>SWISS EDITORIAL ARCHITECTURE • 0% FABRICATION</span>
-        </div>
-
-        {/* Massive Typography Name / Brand */}
-        <div className="w-full flex justify-between items-end border-b border-[#1F1F1F]/10 dark:border-white/10 pb-8">
-          <h2 className="font-display font-extrabold text-[12vw] leading-none tracking-tighter text-[#111111] dark:text-[#F5F5F5] select-none">
-            SWASTIK
-          </h2>
-          <span className="w-4 h-4 md:w-6 md:h-6 bg-[#FF4D2D] rounded-full mb-2 md:mb-6 shrink-0" />
-        </div>
-
-        {/* Bottom Social & Links */}
-        <div className="flex flex-wrap items-center justify-between gap-6 text-xs font-mono uppercase tracking-widest">
-          <div className="flex flex-wrap items-center gap-6">
-            <a
-              href={PERSONAL_INFO.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-[#FF4D2D] transition-colors"
-            >
-              GitHub
-            </a>
-            <a
-              href={PERSONAL_INFO.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-[#FF4D2D] transition-colors"
-            >
-              LinkedIn
-            </a>
-            <a
-              href={PERSONAL_INFO.twitter}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-[#FF4D2D] transition-colors"
-            >
-              Twitter
-            </a>
-            <a
-              href={PERSONAL_INFO.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-[#FF4D2D] transition-colors"
-            >
-              Instagram
-            </a>
-            <a
-              href={PERSONAL_INFO.resume}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-[#FF4D2D] transition-colors"
-            >
-              Resume
-            </a>
+    <footer className="inverse overflow-hidden">
+      <div className="frame">
+        <div className="grid-12 gap-y-8 border-t border-rule pt-8 pb-10">
+          <p className="col-span-4 md:col-span-3 t-label">© {new Date().getFullYear()} {PERSONAL_INFO.name}</p>
+          <p className="col-span-4 md:col-span-5 text-[0.9rem] leading-relaxed text-muted">
+            <span className="t-label text-ink">Colophon — </span>
+            Set in Archivo, Instrument Serif and JetBrains Mono. Built with React, TypeScript, Tailwind CSS, GSAP and
+            Lenis. No trackers.
+          </p>
+          <ul className="col-span-2 md:col-span-2 space-y-1.5">
+            {SOCIAL.map(([label, href]) => (
+              <li key={label}>
+                <a href={href} target="_blank" rel="noopener noreferrer" className="t-label link-u hover:text-accent-text">
+                  {label}
+                  <span className="sr-only"> (opens in a new tab)</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <div className="col-span-2 md:col-span-2 flex md:justify-end items-start">
+            <button type="button" onClick={() => scrollToSection(0)} className="t-label inline-flex items-center gap-2 py-1 hover:text-accent-text">
+              Back to top <span aria-hidden="true">↑</span>
+            </button>
           </div>
-
-          <span className="text-[#666666] dark:text-[#888888]">
-            AVAILABLE FOR BACKEND OPPORTUNITIES
-          </span>
         </div>
       </div>
     </footer>

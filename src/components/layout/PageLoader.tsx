@@ -1,45 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import { forwardRef } from 'react';
 
-interface PageLoaderProps {
-  onComplete: () => void;
-}
-
-export const PageLoader: React.FC<PageLoaderProps> = ({ onComplete }) => {
-  const [step, setStep] = useState(0);
-  const [fading, setFading] = useState(false);
-
-  useEffect(() => {
-    const t1 = setTimeout(() => setStep(1), 350);
-    const t2 = setTimeout(() => setStep(2), 750);
-    const t3 = setTimeout(() => setFading(true), 1150);
-    const t4 = setTimeout(() => onComplete(), 1550);
-
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-      clearTimeout(t4);
-    };
-  }, [onComplete]);
-
+/**
+ * The page-turn curtain shown while one page is exchanged for the next.
+ * It is purely presentational (aria-hidden); App drives it with GSAP and
+ * never uses it under reduced motion. Hidden by default, so it can never block
+ * content if JavaScript animation fails.
+ */
+export const PageLoader = forwardRef<HTMLDivElement>(function PageLoader(_, ref) {
   return (
     <div
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#111111] dark:text-[#F5F5F5] transition-opacity duration-500 ${
-        fading ? 'opacity-0 pointer-events-none' : 'opacity-100'
-      }`}
+      ref={ref}
+      aria-hidden="true"
+      className="fixed inset-0 z-[90] bg-ink text-paper flex flex-col justify-between p-[var(--gutter)] invisible"
     >
-      <div className="flex flex-col items-center gap-4">
-        {/* Massive Typography Name */}
-        <div className="font-display font-extrabold text-4xl sm:text-6xl md:text-8xl tracking-tighter uppercase overflow-hidden">
-          <span className="inline-block animate-fade-in">SWASTIK</span>
-        </div>
-
-        {/* Minimal Swiss Editorial Counter / State */}
-        <div className="flex items-center gap-3 text-xs md:text-sm font-mono tracking-widest uppercase text-[#666666] dark:text-[#888888]">
-          <span>{step === 0 ? '001 // INITIALIZING' : step === 1 ? '002 // SYSTEM ARCHITECTURE' : '003 // PORTFOLIO READY'}</span>
-          <span className="w-1.5 h-1.5 bg-[#FF4D2D] rounded-full animate-pulse" />
-        </div>
+      <div className="flex justify-between t-label opacity-70">
+        <span>Swastik Singh</span>
+        <span>Setting page</span>
+      </div>
+      <div className="overflow-hidden pb-2">
+        <p data-curtain-label className="t-title will-change-transform" />
       </div>
     </div>
   );
-};
+});

@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "build-awwwards-quality-sites": {
+      "source": "MengTo/Skills",
+      "sourceType": "github",
+      "skillPath": "agent-skills/web-design/build-awwwards-quality-sites/SKILL.md",
+      "computedHash": "5a1bb2b382c617361c7984c036a834b4153f9160bcb84fa189d005a9e192a2ac"
+    }
+  }
+}

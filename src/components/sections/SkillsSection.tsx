@@ -1,52 +1,42 @@
-import React from 'react';
-import { SKILL_GROUPS } from '../../data/portfolioData';
+import React, { useRef } from 'react';
+import { PROJECTS, TOOL_GROUPS } from '../../data/portfolioData';
+import { useReveal } from '../../hooks/useReveal';
+import { SectionHead } from '../ui/SectionHead';
 
+const titleOf = (n: string) => PROJECTS.find((p) => p.number === n)?.title ?? n;
+
+/**
+ * Skills as an index, not a scoreboard: every tool carries superscript references
+ * to the case studies it was used in. No bars, no percentages.
+ */
 export const SkillsSection: React.FC = () => {
+  const root = useRef<HTMLElement>(null);
+  useReveal(root);
+
   return (
-    <section id="skills" className="py-24 md:py-36 max-w-7xl mx-auto px-6 md:px-12">
-      {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 md:mb-24 pb-8 border-b border-[#1F1F1F]/10 dark:border-white/10 gap-6">
-        <div>
-          <span className="text-xs font-mono uppercase tracking-widest text-[#FF4D2D] block mb-2">
-            04 // TECHNICAL EXPERTISE
-          </span>
-          <h2 className="font-display font-extrabold text-5xl md:text-8xl tracking-tighter uppercase text-[#111111] dark:text-[#F5F5F5]">
-            SYSTEMS & STACK
-          </h2>
-        </div>
-        <p className="max-w-md text-xs md:text-sm font-mono uppercase tracking-widest text-[#666666] dark:text-[#888888]">
-          CURATED ARCHITECTURAL TOOLKIT • DISTRIBUTED SYSTEMS • CLEAN API DESIGN
-        </p>
-      </div>
+    <section id="toolkit" ref={root} aria-labelledby="toolkit-title" className="frame pb-24 md:pb-36">
+      <SectionHead id="toolkit" number="03" kicker="Toolkit" lines={['Tools,', ['cross-referenced.', 't-serif normal-case !font-normal !tracking-[-0.01em]']]}>
+        Superscripts point to the case study where a tool was used: <span className="text-ink">01</span> VulnTrack,{' '}
+        <span className="text-ink">02</span> Tenora, <span className="text-ink">03</span> AI Interview Platform. Unmarked
+        entries come from coursework and earlier projects.
+      </SectionHead>
 
-      {/* Editorial Grouped Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
-        {SKILL_GROUPS.map((group, groupIdx) => (
-          <div
-            key={group.category}
-            className="flex flex-col border-t-2 border-[#111111] dark:border-white pt-6"
-          >
-            {/* Category Header */}
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-mono text-sm uppercase tracking-widest font-semibold text-[#111111] dark:text-[#F5F5F5]">
-                {group.category}
-              </h3>
-              <span className="font-mono text-xs text-[#FF4D2D]">
-                0{groupIdx + 1}
-              </span>
-            </div>
-
-            {/* List of Skills in Editorial Typeset */}
-            <ul className="flex flex-col gap-3">
-              {group.skills.map((skill) => (
-                <li
-                  key={skill}
-                  className="group flex items-center justify-between py-2 border-b border-[#1F1F1F]/10 dark:border-white/10 hover:border-[#FF4D2D] transition-colors"
-                >
-                  <span className="font-display text-lg md:text-xl font-normal text-[#111111] dark:text-[#F5F5F5] group-hover:text-[#FF4D2D] transition-colors">
-                    {skill}
-                  </span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#1F1F1F]/20 dark:bg-white/20 group-hover:bg-[#FF4D2D] transition-colors" />
+      <div className="border-t-2 border-ink">
+        {TOOL_GROUPS.map((group) => (
+          <div key={group.discipline} className="grid-12 gap-y-3 border-b border-rule py-6 md:py-7" data-reveal>
+            <h3 className="col-span-4 md:col-span-3 t-label text-muted pt-2">{group.discipline}</h3>
+            <ul className="col-span-4 md:col-span-9 flex flex-wrap gap-x-7 gap-y-2">
+              {group.tools.map((tool) => (
+                <li key={tool.name} className="text-[clamp(1.35rem,2.4vw,2.25rem)] font-[640] [font-stretch:84%] tracking-[-0.02em] leading-tight">
+                  {tool.name}
+                  {tool.usedIn.length > 0 && (
+                    <>
+                      <sup className="ml-1 font-mono text-[0.7rem] tracking-normal text-accent-text align-super" aria-hidden="true">
+                        {tool.usedIn.join(' ')}
+                      </sup>
+                      <span className="sr-only"> (used in {tool.usedIn.map(titleOf).join(', ')})</span>
+                    </>
+                  )}
                 </li>
               ))}
             </ul>

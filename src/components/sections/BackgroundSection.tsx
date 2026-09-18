@@ -1,65 +1,63 @@
-import React from 'react';
-import { MILESTONES } from '../../data/portfolioData';
+import React, { useRef } from 'react';
+import { CERTIFICATIONS, EDUCATION, TRAINING } from '../../data/portfolioData';
+import { useReveal } from '../../hooks/useReveal';
+import { SectionHead } from '../ui/SectionHead';
 
+/** Education, training and certifications as a ledger — deliberately quieter than the work. */
 export const BackgroundSection: React.FC = () => {
+  const root = useRef<HTMLElement>(null);
+  useReveal(root);
+
   return (
-    <section id="background" className="py-24 md:py-36 max-w-7xl mx-auto px-6 md:px-12">
-      {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 md:mb-24 pb-8 border-b border-[#1F1F1F]/10 dark:border-white/10 gap-6">
-        <div>
-          <span className="text-xs font-mono uppercase tracking-widest text-[#FF4D2D] block mb-2">
-            03 // CREDENTIALS & BACKGROUND
-          </span>
-          <h2 className="font-display font-extrabold text-5xl md:text-8xl tracking-tighter uppercase text-[#111111] dark:text-[#F5F5F5]">
-            EDUCATION & MILESTONES
-          </h2>
-        </div>
-        <p className="max-w-md text-xs md:text-sm font-mono uppercase tracking-widest text-[#666666] dark:text-[#888888]">
-          ACADEMIC FOUNDATION • TECHNICAL EXPERTISE • VERIFIED ACHIEVEMENTS
-        </p>
-      </div>
+    <section id="record" ref={root} aria-labelledby="record-title" className="frame pb-24 md:pb-36">
+      <SectionHead id="record" number="04" kicker="Record" lines={['Education', ['& training.', 't-serif normal-case !font-normal !tracking-[-0.01em]']]} />
 
-      {/* Editorial Timeline Grid */}
-      <div className="flex flex-col divide-y divide-[#1F1F1F]/10 dark:divide-white/10">
-        {MILESTONES.map((item) => (
-          <div
-            key={item.id}
-            className="py-10 md:py-14 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-12 items-start"
-          >
-            {/* Year & Category */}
-            <div className="md:col-span-3 flex md:flex-col justify-between md:justify-start gap-2">
-              <span className="font-mono text-xl md:text-3xl font-bold tracking-tight text-[#111111] dark:text-[#F5F5F5]">
-                {item.year}
-              </span>
-              <span className="inline-block text-[10px] font-mono uppercase tracking-widest px-2.5 py-1 bg-[#111111]/5 dark:bg-white/10 text-[#FF4D2D] w-fit">
-                {item.category}
-              </span>
-            </div>
-
-            {/* Title & Organization */}
-            <div className="md:col-span-5">
-              <h3 className="font-display font-bold text-2xl md:text-3xl tracking-tight text-[#111111] dark:text-[#F5F5F5] mb-2">
-                {item.title}
-              </h3>
-              <p className="text-sm font-mono uppercase tracking-wider text-[#666666] dark:text-[#888888]">
-                {item.organization}
+      <h3 className="t-label text-muted mb-3">Education</h3>
+      <ol className="border-t-2 border-ink">
+        {EDUCATION.map((e, i) => (
+          <li key={e.institution} className="grid-12 gap-y-2 border-b border-rule py-6 md:py-8" data-reveal>
+            <p className="col-span-4 md:col-span-3 t-label text-muted pt-1.5">{e.period}</p>
+            <div className="col-span-4 md:col-span-6">
+              <p className={i === 0 ? 't-head' : 'text-[1.3rem] font-[650] [font-stretch:85%] leading-tight'}>{e.institution}</p>
+              <p className="mt-1.5 text-muted">
+                {e.qualification} · {e.place}
               </p>
             </div>
-
-            {/* Concise Description */}
-            <div className="md:col-span-4">
-              <p className="text-sm text-[#666666] dark:text-[#888888] font-light leading-relaxed">
-                {item.description}
-              </p>
-              {item.highlight && (
-                <div className="mt-3 text-xs font-mono uppercase tracking-widest text-[#111111] dark:text-[#F5F5F5] flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-[#FF4D2D] rounded-full inline-block" />
-                  <span>{item.highlight}</span>
-                </div>
-              )}
-            </div>
-          </div>
+            {e.result && (
+              <p className="col-span-4 md:col-span-3 md:text-right font-mono text-[0.95rem] pt-1">{e.result}</p>
+            )}
+          </li>
         ))}
+      </ol>
+
+      <div className="mt-16 grid-12 gap-y-12">
+        <div className="col-span-4 md:col-span-5" data-reveal>
+          <h3 className="t-label text-muted mb-3">Training</h3>
+          {TRAINING.map((t) => (
+            <div key={t.title} className="border-t-2 border-ink pt-5">
+              <p className="t-label text-muted">{t.date}</p>
+              <p className="mt-2 text-[1.3rem] font-[650] [font-stretch:85%] leading-tight">
+                {t.title} <span className="text-muted font-[450]">— {t.issuer}</span>
+              </p>
+              {t.note && <p className="mt-3 t-body text-muted">{t.note}</p>}
+            </div>
+          ))}
+        </div>
+
+        <div className="col-span-4 md:col-span-6 md:col-start-7" data-reveal>
+          <h3 className="t-label text-muted mb-3">Certifications</h3>
+          <ul className="border-t-2 border-ink">
+            {CERTIFICATIONS.map((c) => (
+              <li key={c.title} className="grid grid-cols-[5.5rem_1fr] gap-4 border-b border-rule py-3.5">
+                <span className="t-label text-muted pt-0.5">{c.date}</span>
+                <span className="text-[0.98rem] font-[520]">
+                  {c.title}
+                  {c.issuer && <span className="text-muted font-[400]"> — {c.issuer}</span>}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );
