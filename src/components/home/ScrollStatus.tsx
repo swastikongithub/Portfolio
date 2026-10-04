@@ -7,6 +7,7 @@ const CHAPTERS: [id: string, label: string][] = [
   ['twice', 'the second time'],
   ['work', 'four systems'],
   ['record', 'the record'],
+  ['reels', 'swastik.mov'],
   ['about', 'who built them'],
   ['contact', 'write to me'],
 ];

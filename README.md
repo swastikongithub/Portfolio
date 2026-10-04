@@ -23,8 +23,17 @@ second time something happens, and each guarantee is enforced in the database.
   4. *Four systems*: the pinned work explorer.
   5. *The record*: a git graph of all 115 commits on the four main branches (9 Sep to 4 Oct 2026). It
      scrolls past a playhead while a counter adds them up.
-  6. *Who built them*: a portrait and habits that tick in as checks, each with its evidence.
-  7. *Write to me*.
+  6. *swastik.mov*, the second craft, in the palette and type of the reels themselves (a warm room after dark,
+     Anton and Instrument Serif):
+     - **The cut**: "Everything works once." is struck through, then *except on camera*. A slate counts takes up
+       to the question on Post 25, next to that reel.
+     - **The edit**: all 56 posts in the order they were made, as an editing timeline. A picture track holds the
+       covers and a second track's bars are views. Scrolling moves the playhead and the monitor shows the clip
+       under it.
+     - **The ten most watched**: a treemap where each tile's area is its view count, with silent previews.
+     - **One calendar, two crafts**: every post and every commit since Nov 2025, one square per day.
+  7. *Who made it*: a portrait, a photo from the Himachal trip, and habits from both crafts that tick in as checks.
+  8. *Write to me*.
 - **Case studies** (`/projects/:slug`) are the deep layer: a scroll-driven scene of the mechanism, a
   hands-on figure, the problem, what was built, the story, the request path, decisions, safeguards, known
   limits and the stack. They are lazy-loaded.
@@ -75,6 +84,20 @@ Every number (radius, viscosity, ripple amplitude and frequency, impulse strengt
 tiers) lives in `src/lib/interaction/config.ts`. Touch gets taps only (no drag capture, scrolling is
 untouched); reduced motion turns the field off; without WebGL nothing is drawn and the DOM layout stands
 on its own.
+
+## Reels and media
+
+`src/data/reels.ts` holds every post on the public grid of instagram.com/swastik.mov as read on 4 Oct 2026. Dates
+come from post timestamps, views from the Reels tab that day, and captions are first lines in the author's words.
+Media lives in `public/media/reels/`:
+
+- `covers/` and `thumbs/`: WebP covers for all 56 posts (about 1.5 MB together)
+- `<code>.preview.mp4`: six-second silent loops for the ten most-watched reels (about 210 KB each)
+- `<code>.mp4`: those ten reels in full, with sound, re-encoded to 960px H.264 (about 20 MB together)
+
+Nothing downloads until it can be seen. A preview gets its source only when it nears the viewport and is asked
+to play. Full reels load only when someone opens the player, an accessible dialog with Escape, arrow keys and
+focus return. Reduced motion and Save-Data keep every preview as a still cover.
 
 ## The cursor
 

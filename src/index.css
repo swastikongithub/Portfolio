@@ -102,6 +102,54 @@ html[data-on-stage] [data-trace] {
 .stage {
   background: var(--bg);
 }
+/*
+ * swastik.mov: the creator chapter borrows the palette of the reels themselves:
+ * a warm room after dark, cream type, and the colours of his captions (yellow,
+ * red, pink, blue). Yellow stays the shared signal between the two crafts.
+ */
+.reel {
+  --bg: #120e0c;
+  --bg-2: #1c1714;
+  --sunk: #0a0806;
+  --ink: #f4ede4;
+  --ink-2: #c5b9ab;
+  --ink-3: #8c7f72;
+  --line: rgb(244 237 228 / 0.11);
+  --line-2: rgb(244 237 228 / 0.25);
+  --signal-text: #ffc21a;
+  --reel-red: #ff4b3e;
+  --reel-pink: #ff9fd4;
+  --reel-blue: #5aa2ff;
+  color: var(--ink);
+  color-scheme: dark;
+}
+.reel.stage {
+  background: var(--bg);
+}
+/* Film grain: one static SVG noise tile, blended softly. Never animated. */
+.grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+}
+/* The two faces of his captions: a heavy condensed sans and an italic serif. */
+.t-anton {
+  font-family: 'Anton', 'Impact', sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
+  line-height: 0.88;
+}
+.t-serif-i {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
 /* Programmatic focus targets (headings with tabindex=-1) never show the keyboard ring. */
 [tabindex='-1']:focus {
   outline: none;
@@ -766,4 +814,59 @@ html.has-cursor [contenteditable='true'] {
   stroke-linejoin: round;
   stroke-dasharray: 24;
   stroke-dashoffset: 0;
+}
+
+/* swastik.mov: timeline sizes, the monitor's cut, the slate's clapper. */
+.reel {
+  --clip: clamp(54px, 6vw, 92px);
+  --v1: clamp(38px, 6.2svh, 62px);
+  --a1: clamp(16px, 3svh, 34px);
+}
+.monitor-cut {
+  animation: monitor-cut 220ms var(--ease-out) both;
+}
+@keyframes monitor-cut {
+  from {
+    opacity: 0.35;
+    transform: scale(1.015);
+  }
+}
+.slate-clap {
+  background: repeating-linear-gradient(-45deg, var(--ink) 0 10px, var(--bg) 10px 20px);
+  border: 2px solid var(--ink);
+  border-radius: 3px 3px 0 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .monitor-cut {
+    animation: none;
+  }
+}
+
+/* Treemap tiles hide their caption when small; the calendar's day cells. */
+@container (max-width: 190px) {
+  .tile-caption {
+    display: none;
+  }
+}
+.cal-cell {
+  display: block;
+  border-radius: 2px;
+}
+.cal-empty {
+  background: rgb(244 237 228 / 0.06);
+}
+.cal-post {
+  background: var(--reel-pink);
+}
+.cal-c1 {
+  background: rgb(255 194 26 / 0.35);
+}
+.cal-c2 {
+  background: rgb(255 194 26 / 0.55);
+}
+.cal-c3 {
+  background: rgb(255 194 26 / 0.8);
+}
+.cal-c4 {
+  background: #ffc21a;
 }

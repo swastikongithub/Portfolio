@@ -58,6 +58,7 @@ export const About: React.FC = () => {
     >
       <div className="frame grid-12 gap-y-10">
         <div className="col-span-4 md:col-span-5 lg:col-span-4">
+          <div className="relative mb-10 mr-3 sm:mr-6">
           <figure className="overflow-hidden rounded-[var(--r-lg)] bg-sunk" data-portrait>
             <img
               src={portrait}
@@ -69,6 +70,20 @@ export const About: React.FC = () => {
               className="aspect-[3/4] h-auto w-full object-cover"
             />
           </figure>
+          {/* The other side: the pinned post on swastik.mov. */}
+          <figure className="absolute -bottom-8 -right-3 w-[42%] rotate-[3deg] overflow-hidden rounded-[var(--r-md)] border-4 border-bg shadow-[0_18px_40px_-18px_rgb(0_0_0/0.55)] sm:-right-6" data-polaroid>
+            <img
+              src="/media/reels/covers/DT2Nz0AkaEH.webp"
+              alt="Swastik in the mountains near Manali, Himachal Pradesh, in a black sweatshirt with snow-capped peaks behind."
+              width={720}
+              height={960}
+              loading="lazy"
+              decoding="async"
+              className="aspect-[3/4] h-auto w-full object-cover"
+            />
+            <figcaption className="t-mono bg-bg px-2 py-1.5 text-[10px] leading-snug text-ink-2">Himachal, Jan 2026. &ldquo;Cold hands. Clear head.&rdquo;</figcaption>
+          </figure>
+          </div>
         </div>
 
         <div className="col-span-4 flex flex-col gap-8 md:col-span-7 lg:col-span-7 lg:col-start-6">
@@ -77,7 +92,11 @@ export const About: React.FC = () => {
           </h2>
           <p className="t-lead max-w-[46ch]" data-reveal>
             The constraint, the retry, the audit row, the 404 that could have been a 403. I&rsquo;m Swastik, a Computer
-            Science student at Lovely Professional University.
+            Science student at Lovely Professional University. When the laptop closes I&rsquo;m{' '}
+            <a href={PERSONAL_INFO.instagram} target="_blank" rel="noopener noreferrer" className="link">
+              swastik.mov<span className="sr-only"> on Instagram (opens in a new tab)</span>
+            </a>
+            , and I record and edit videos about my life.
           </p>
 
           <ul className="grid gap-x-8 sm:grid-cols-2" aria-label="How I work, with the evidence">

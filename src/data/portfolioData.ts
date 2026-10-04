@@ -36,6 +36,7 @@ export const PERSONAL_INFO = {
 
 export const SECTIONS: SectionLink[] = [
   { id: 'work', label: 'Work' },
+  { id: 'reels', label: 'Reels' },
   { id: 'about', label: 'About' },
   { id: 'contact', label: 'Contact' },
 ];
@@ -483,6 +484,14 @@ export const HABITS: Habit[] = [
   {
     title: 'List the edges',
     evidence: 'docs/known-issues.md, "Status and known gaps", "Not in this phase".',
+  },
+  {
+    title: 'Show up daily',
+    evidence: '45 numbered posts in 56 days on Instagram, 21 Nov 2025 to 15 Jan 2026.',
+  },
+  {
+    title: 'Study the misses',
+    evidence: '"The reel that blew up wasn’t the lesson. The ones that didn’t were." (Post 35)',
   },
 ];
 

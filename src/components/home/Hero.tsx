@@ -214,7 +214,7 @@ export const Hero: React.FC = () => {
 
         <div className="frame flex flex-1 flex-col justify-between gap-8 pb-7 pt-[calc(var(--header-h)+clamp(12px,3svh,32px))]">
           <p className="t-small font-[600]" data-hero-fade data-hero-in>
-            {PERSONAL_INFO.name}, software engineer
+            {PERSONAL_INFO.name}, software engineer and swastik.mov
           </p>
 
           <h1 id="hero-title" tabIndex={-1} className="t-hero-xl outline-none" data-hero-title>

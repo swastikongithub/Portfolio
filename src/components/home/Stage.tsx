@@ -6,7 +6,7 @@ import { MOTION_OK, gsap, ScrollTrigger, useGSAP } from '../../lib/motion';
  * "Inside the system": the dark stage the hero's dive opens onto. While it is
  * under the header, the header and the section trace take its palette too.
  */
-export const Stage: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const Stage: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => {
   const root = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -26,7 +26,7 @@ export const Stage: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   );
 
   return (
-    <div ref={root} className="stage relative" data-stage>
+    <div ref={root} className={`stage relative ${className}`} data-stage>
       {children}
     </div>
   );
