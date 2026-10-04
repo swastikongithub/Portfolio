@@ -15,6 +15,16 @@ second time something happens, and each guarantee is enforced in the database.
 
 ## Structure
 
+- **The cold open** (first visit per session, about 8 s, skipped by any key, click, scroll or the Skip
+  button, never shown under reduced motion):
+  1. A film leader counts 3, 2, 1.
+  2. *I build software.* Real commit subjects stream past as a counter reaches 115.
+  3. A hard cut into the reels' palette: *I make videos.* A contact sheet fills with the covers of the 45-post
+     daily run.
+  4. *What happens the second time?* Every frame races for one slot. One gets in and the rest are refused.
+  5. The slot flies to the full stop of the hero's headline and opens onto the page like an iris.
+
+  Three.js waits until the last beat (`src/lib/coldOpen.ts`), so the film runs on a quiet main thread.
 - **Home** tells one story, in chapters:
   1. *The claim*: a live 3D run of LPU Reserve's concurrency test converging on the full stop of the headline.
   2. *The dive* through that slot into a dark stage.

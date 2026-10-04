@@ -468,6 +468,30 @@ export const HISTORY: RepoHistory[] = [
 
 export const HISTORY_RANGE = { from: '2026-09-09', to: '2026-10-04' } as const;
 
+/**
+ * Commit subjects the opening sequence streams past, verbatim from `git log` on
+ * each main branch, oldest first.
+ */
+export const INTRO_COMMITS: { date: string; slug: ProjectCaseStudy['slug']; message: string }[] = [
+  { date: '2026-09-09', slug: 'tenora', message: 'Initial public release of Tenora' },
+  { date: '2026-09-11', slug: 'ai-interview-platform', message: 'fix: close role-escalation vulnerability and harden demo/queue/upload paths' },
+  { date: '2026-09-12', slug: 'tenora', message: 'feat: add operator control mutations and audit log' },
+  { date: '2026-09-12', slug: 'tenora', message: 'test: pin that deactivating an operator actually locks them out' },
+  { date: '2026-09-13', slug: 'ai-interview-platform', message: 'feat: interview domain, motion components, and UI redesign' },
+  { date: '2026-09-16', slug: 'tenora', message: "fix: don't fail a Cashfree checkout on a concurrent idempotency conflict" },
+  { date: '2026-09-17', slug: 'vulntrack', message: 'feat: implement real authentication backend' },
+  { date: '2026-09-17', slug: 'vulntrack', message: 'feat: implement organization and RBAC' },
+  { date: '2026-09-23', slug: 'vulntrack', message: 'feat: implement vulnerability matching' },
+  { date: '2026-09-30', slug: 'lpu-reserve', message: 'Booking engine: atomic slot claims, domain services and the 500-attempt proof' },
+  { date: '2026-10-01', slug: 'lpu-reserve', message: 'QA: adversarial service tests and the bugs they found' },
+  { date: '2026-10-01', slug: 'lpu-reserve', message: 'Security: close SEC-01, SEC-02, SEC-04 and SEC-05' },
+  { date: '2026-10-01', slug: 'lpu-reserve', message: 'Accessibility: WCAG 2.2 AA on student pages, verified by axe in light and dark' },
+  { date: '2026-10-01', slug: 'lpu-reserve', message: 'Security QA: close the lockout race, Unicode-digit 500s and audit gaps' },
+  { date: '2026-10-02', slug: 'lpu-reserve', message: 'Exactly one Celery Beat, analytics catch-up, and a pre-deploy release step' },
+  { date: '2026-10-02', slug: 'lpu-reserve', message: 'Nightly encrypted database backups to a private bucket' },
+  { date: '2026-10-04', slug: 'lpu-reserve', message: 'Landing: public landing page at / for signed-out visitors' },
+];
+
 export const HABITS: Habit[] = [
   {
     title: 'Let the database say no',

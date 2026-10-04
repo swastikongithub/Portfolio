@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import type { Instrument } from './Instrument';
 import { InstrumentContext, paletteOf } from './context';
+import { afterColdOpen } from '../coldOpen';
 
 /**
  * Creates the one instrument for the page. Three.js is loaded as a separate
- * chunk after first paint, so the headline and the content never wait for it.
+ * chunk after first paint (and after the cold open, if one is playing), so the
+ * headline and the content never wait for it.
  * If WebGL is unavailable, hosts are told to show their DOM fallbacks.
  */
 export const InstrumentProvider: React.FC<{ reducedMotion: boolean; children: React.ReactNode }> = ({ reducedMotion, children }) => {
@@ -14,22 +16,25 @@ export const InstrumentProvider: React.FC<{ reducedMotion: boolean; children: Re
   useEffect(() => {
     let disposed = false;
     let made: Instrument | null = null;
-    import('./Instrument')
-      .then(({ Instrument: Ctor, webglAvailable }) => {
-        if (disposed) return;
-        if (!webglAvailable()) {
-          setFailed(true);
-          return;
-        }
-        try {
-          made = new Ctor(paletteOf(document.documentElement), {}, { reduced: reducedMotion });
-          setInstrument(made);
-        } catch {
-          setFailed(true);
-        }
-      })
-      .catch(() => !disposed && setFailed(true));
+    const load = () =>
+      import('./Instrument')
+        .then(({ Instrument: Ctor, webglAvailable }) => {
+          if (disposed) return;
+          if (!webglAvailable()) {
+            setFailed(true);
+            return;
+          }
+          try {
+            made = new Ctor(paletteOf(document.documentElement), {}, { reduced: reducedMotion });
+            setInstrument(made);
+          } catch {
+            setFailed(true);
+          }
+        })
+        .catch(() => !disposed && setFailed(true));
+    const cancel = afterColdOpen(() => void load());
     return () => {
+      cancel();
       disposed = true;
       made?.dispose();
       setInstrument(null);

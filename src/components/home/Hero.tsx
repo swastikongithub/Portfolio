@@ -5,10 +5,11 @@ import { EASE, MOTION_OK, gsap, ScrollTrigger, useGSAP } from '../../lib/motion'
 import { useInstrument } from '../../lib/instrument/context';
 import { useInstrumentHost } from '../../lib/instrument/useInstrumentHost';
 import type { Instrument } from '../../lib/instrument/Instrument';
+import { Intro } from './Intro';
+import { introPending, markIntroSeen } from '../../lib/coldOpen';
 
 /** The colour of the "inside the system" stage the dive lands in (see .stage in index.css). */
 const STAGE = '#0a0c0f';
-const BOOT_KEY = 'portfolio-booted';
 
 /** The slot's box inside the section, from layout offsets (ignores in-flight transforms). */
 const slotBox = (dot: HTMLElement, section: HTMLElement) => {
@@ -30,13 +31,12 @@ const slotBox = (dot: HTMLElement, section: HTMLElement) => {
  * where it refuses the rest. Scrolling on dives into that slot.
  */
 export const Hero: React.FC = () => {
-  const { scrollToSection, reducedMotion, setScrollLocked } = useSite();
+  const { scrollToSection, reducedMotion } = useSite();
   const { failed } = useInstrument();
   const root = useRef<HTMLElement>(null);
   const glRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLSpanElement>(null);
   const diveRef = useRef<HTMLDivElement>(null);
-  const bootRef = useRef<HTMLDivElement>(null);
   const instRef = useRef<Instrument | null>(null);
   const releaseRequested = useRef(false);
   const attemptsRef = useRef<HTMLSpanElement>(null);
@@ -44,14 +44,15 @@ export const Hero: React.FC = () => {
   const bookedRef = useRef<HTMLSpanElement>(null);
 
   const [booked, setBooked] = useState(false);
-  const [boot, setBoot] = useState(() => {
-    if (reducedMotion) return false;
-    try {
-      return sessionStorage.getItem(BOOT_KEY) !== '1';
-    } catch {
-      return false;
-    }
-  });
+  // The cold open plays once per session (never under reduced motion). The hero
+  // reveals itself when the intro hands off, or straight away without one.
+  const [intro, setIntro] = useState(() => !reducedMotion && introPending());
+  const [revealed, setRevealed] = useState(!intro);
+  const introDone = useCallback(() => {
+    setIntro(false);
+    markIntroSeen();
+    ScrollTrigger.refresh();
+  }, []);
 
   const setCounts = (a: number, r: number, b: number) => {
     if (attemptsRef.current) attemptsRef.current.textContent = String(a);
@@ -84,55 +85,26 @@ export const Hero: React.FC = () => {
     instRef.current?.release();
   }, []);
 
-  // Intro: an optional boot (first visit per session), the headline, then the barrier releases.
+  // The headline rises and the barrier releases (after the cold open, if one played).
   useGSAP(
     () => {
+      if (!revealed) return;
       const mm = gsap.matchMedia();
       mm.add(MOTION_OK, () => {
-        const tl = gsap.timeline({ defaults: { ease: EASE.out } });
-        if (boot && bootRef.current) {
-          setScrollLocked(true);
-          const counter = { n: 0 };
-          const num = bootRef.current.querySelector('[data-boot-n]');
-          const status = bootRef.current.querySelector('[data-boot-status]');
-          tl.to(counter, {
-            n: 500,
-            duration: 0.95,
-            ease: 'power2.inOut',
-            onUpdate: () => {
-              if (num) num.textContent = String(Math.round(counter.n)).padStart(3, '0');
-            },
-          })
-            .fromTo(bootRef.current.querySelector('[data-boot-bar]'), { scaleX: 0 }, { scaleX: 1, duration: 0.95, ease: 'power2.inOut' }, 0)
-            .add(() => {
-              if (status) status.textContent = 'barrier released';
-            }, '+=0.05')
-            .to(bootRef.current, { yPercent: -100, duration: 0.85, ease: EASE.move }, '+=0.15')
-            .add(() => {
-              setScrollLocked(false);
-              try {
-                sessionStorage.setItem(BOOT_KEY, '1');
-              } catch {
-                /* storage unavailable: the boot simply shows again next visit */
-              }
-            });
-        }
-        tl.fromTo('[data-hero-line]', { yPercent: 108 }, { yPercent: 0, duration: 1.2, stagger: 0.09 }, boot ? '-=0.55' : 0.1)
+        gsap
+          .timeline({ defaults: { ease: EASE.out } })
+          .fromTo('[data-hero-line]', { yPercent: 108 }, { yPercent: 0, duration: 1.2, stagger: 0.09 }, 0.1)
           .fromTo('[data-hero-in]', { y: 18, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.06 }, '-=0.8')
           .add(release, '-=0.7')
           .add(() => {
-            setBoot(false);
             ScrollTrigger.refresh();
             instRef.current?.reaim();
           });
       });
-      mm.add('(prefers-reduced-motion: reduce)', () => {
-        setBoot(false);
-        release();
-      });
+      mm.add('(prefers-reduced-motion: reduce)', () => release());
       return () => mm.revert();
     },
-    { scope: root, dependencies: [] },
+    { scope: root, dependencies: [revealed] },
   );
 
   // The dive: scroll pins the hero and the slot grows until it is the whole screen.
@@ -194,23 +166,7 @@ export const Hero: React.FC = () => {
 
   return (
     <>
-      {boot && (
-        <div ref={bootRef} className="fixed inset-0 z-[95] flex flex-col justify-end bg-ink text-bg" aria-hidden="true">
-          <div className="frame pb-10">
-            <p className="t-mono-lg t-num text-[clamp(3rem,12vw,9rem)] font-[500] leading-none">
-              <span data-boot-n>000</span>
-              <span className="text-ink-3">/500</span>
-            </p>
-            <div className="mt-6 h-[3px] w-full overflow-hidden rounded bg-ink-2/40">
-              <div data-boot-bar className="h-full w-full origin-left bg-signal" />
-            </div>
-            <p className="t-mono mt-3 flex justify-between gap-4 text-ink-3">
-              <span data-boot-status>connecting clients, waiting at the barrier</span>
-              <span className="max-sm:hidden">test_concurrency.py</span>
-            </p>
-          </div>
-        </div>
-      )}
+      {intro && <Intro target={dotRef} onReveal={() => setRevealed(true)} onDone={introDone} />}
 
       <section
         ref={root}
