@@ -32,7 +32,7 @@ export const About: React.FC = () => {
         gsap.utils.toArray<HTMLElement>('[data-check-row]').forEach((row) => {
           gsap
             .timeline({ scrollTrigger: { trigger: row, start: 'top 88%', toggleActions: 'play none none reverse' } })
-            .fromTo(row.children[1], { autoAlpha: 0.35, x: -6 }, { autoAlpha: 1, x: 0, duration: 0.5, ease: 'power3.out' }, 0)
+            .fromTo(row.children[1], { autoAlpha: 0, x: -6 }, { autoAlpha: 1, x: 0, duration: 0.5, ease: 'power3.out' }, 0)
             .fromTo(row.querySelector('[data-check]'), { rotate: -90, scale: 0.6, backgroundColor: 'transparent' }, { rotate: 0, scale: 1, backgroundColor: 'var(--signal)', duration: 0.45, ease: 'back.out(2)' }, 0.05)
             .fromTo(row.querySelector('[data-check-path]'), { strokeDashoffset: 24 }, { strokeDashoffset: 0, duration: 0.35, ease: 'power2.out' }, 0.25);
         });

@@ -30,7 +30,8 @@ second time something happens, and each guarantee is enforced in the database.
      - **The edit**: all 56 posts in the order they were made, as an editing timeline. A picture track holds the
        covers and a second track's bars are views. Scrolling moves the playhead and the monitor shows the clip
        under it.
-     - **The ten most watched**: a treemap where each tile's area is its view count, with silent previews.
+     - **Ten of the most watched**: a treemap where each tile's area is its view count, with silent previews. One
+       political reel stays in the archive but is not featured.
      - **One calendar, two crafts**: every post and every commit since Nov 2025, one square per day.
   7. *Who made it*: a portrait, a photo from the Himachal trip, and habits from both crafts that tick in as checks.
   8. *Write to me*.
@@ -92,7 +93,7 @@ come from post timestamps, views from the Reels tab that day, and captions are f
 Media lives in `public/media/reels/`:
 
 - `covers/` and `thumbs/`: WebP covers for all 56 posts (about 1.5 MB together)
-- `<code>.preview.mp4`: six-second silent loops for the ten most-watched reels (about 210 KB each)
+- `<code>.preview.mp4`: six-second silent loops for the ten featured reels (about 210 KB each)
 - `<code>.mp4`: those ten reels in full, with sound, re-encoded to 960px H.264 (about 20 MB together)
 
 Nothing downloads until it can be seen. A preview gets its source only when it nears the viewport and is asked

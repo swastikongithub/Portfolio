@@ -40,7 +40,7 @@
   --sunk: #d6d9de;
   --ink: #0e1115;
   --ink-2: #444b55;
-  --ink-3: #6b7380;
+  --ink-3: #585f6a;
   --line: rgb(14 17 21 / 0.13);
   --line-2: rgb(14 17 21 / 0.3);
   --signal: #ffc21a;
@@ -68,7 +68,7 @@
   --sunk: #08090b;
   --ink: #e7e9ec;
   --ink-2: #a5adb8;
-  --ink-3: #737b87;
+  --ink-3: #7d8591;
   --line: rgb(231 233 236 / 0.11);
   --line-2: rgb(231 233 236 / 0.26);
   --signal: #ffc21a;
@@ -91,7 +91,7 @@ html[data-on-stage] [data-trace] {
   --sunk: #050608;
   --ink: #eceef1;
   --ink-2: #a7afba;
-  --ink-3: #6f7783;
+  --ink-3: #7a828e;
   --line: rgb(236 238 241 / 0.1);
   --line-2: rgb(236 238 241 / 0.24);
   --signal-text: #ffc21a;

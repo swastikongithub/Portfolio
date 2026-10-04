@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { REELS, TOP_REELS, coverSrc, fmtDate, fmtViews, fullSrc, reelUrl, quoted } from '../../data/reels';
+import { PROFILE, REELS, TOP_REELS, coverSrc, fmtDate, fmtViews, fullSrc, reelUrl, quoted } from '../../data/reels';
 import { useSite } from '../../context/site';
 import { trapTab } from '../../lib/focus';
 import { EASE, gsap } from '../../lib/motion';
@@ -106,7 +106,7 @@ export const ReelPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ ch
             <div className="flex flex-col gap-4">
               <div className="flex items-center justify-between gap-3">
                 <p className="t-mono text-ink-2">
-                  {rank} of {PLAYABLE.length} most watched
+                  {rank} of {PLAYABLE.length} featured
                 </p>
                 <button type="button" onClick={close} className="btn btn-sm" data-autofocus>
                   Close
@@ -114,7 +114,7 @@ export const ReelPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ ch
               </div>
               <div>
                 <p className="t-anton text-[clamp(2.4rem,5vw,3.6rem)] leading-none text-signal">{fmtViews(reel.views!)}</p>
-                <p className="t-mono mt-1 text-ink-2">views on Instagram, {fmtDate(reel.date)}</p>
+                <p className="t-mono mt-1 text-ink-2">views as of {PROFILE.readOn}. Posted {fmtDate(reel.date)}.</p>
               </div>
               {reel.caption && <p className="t-serif-i text-[1.6rem] leading-[1.15]">{quoted(reel.caption)}</p>}
               {reel.label && <p className="t-mono text-ink-2">{reel.label}</p>}

@@ -105,7 +105,7 @@ export const OneCalendar: React.FC = () => {
         <p className="t-mono mt-4 flex flex-wrap gap-x-6 gap-y-1 text-ink-2">
           <span className="flex items-center gap-2">
             <span className="cal-cell cal-post inline-block h-3 w-3" aria-hidden="true" />
-            {postCount} posts on Instagram
+            {postCount} posts on the Instagram grid
           </span>
           <span className="flex items-center gap-2">
             <span className="cal-cell cal-c3 inline-block h-3 w-3" aria-hidden="true" />

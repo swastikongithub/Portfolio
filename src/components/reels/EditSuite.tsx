@@ -4,11 +4,11 @@ import {
   REELS_CHRONO,
   REEL_COUNT,
   STREAK,
-  TOTAL_VIEWS,
   fmtDate,
   fmtViews,
   reelUrl,
   thumbSrc,
+  viewsFloor,
   type Reel, quoted } from '../../data/reels';
 import { useSite } from '../../context/site';
 import { gsap, ScrollTrigger, useGSAP } from '../../lib/motion';
@@ -27,7 +27,7 @@ const monthOf = (iso: string) => iso.slice(0, 7);
  * Every post, in the order it was made, laid out as an edit: a program monitor,
  * an inspector, and a timeline with a picture track (the covers) and a second
  * track whose bars are views. Scrolling moves the playhead; the monitor shows
- * the clip under it and, for the ten most watched, plays its silent preview once
+ * the clip under it and, for the ten featured reels, plays its silent preview once
  * the playhead rests. Under reduced motion it is a plain, clickable strip.
  */
 export const EditSuite: React.FC = () => {
@@ -118,7 +118,7 @@ export const EditSuite: React.FC = () => {
             </div>
             <div>
               <dt className="sr-only">Views</dt>
-              <dd>{Math.floor(TOTAL_VIEWS / 1000)}K+ views</dd>
+              <dd>{viewsFloor()} views</dd>
             </div>
             <div className="max-sm:hidden">
               <dt className="sr-only">Daily run</dt>
@@ -283,7 +283,7 @@ const Timeline = memo(
           </span>
           <span className="flex items-center gap-1.5">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-signal" />
-            the ten most watched
+            featured, with full video
           </span>
         </div>
       </div>

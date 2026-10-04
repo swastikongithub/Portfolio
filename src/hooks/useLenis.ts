@@ -33,17 +33,26 @@ export function useLenis(enabled: boolean) {
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
 
-    // Webfonts change line lengths and therefore every trigger position.
+    // Webfonts change line lengths and therefore every trigger position. The font
+    // stylesheet loads without blocking paint, so fonts can arrive after `ready`
+    // first resolves: re-measure on `ready` and again whenever a batch finishes.
     let cancelled = false;
-    document.fonts?.ready.then(() => {
-      if (!cancelled) {
+    let timer = 0;
+    const remeasure = () => {
+      if (cancelled) return;
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
         lenis.resize();
         ScrollTrigger.refresh();
-      }
-    });
+      }, 60);
+    };
+    document.fonts?.ready.then(remeasure);
+    document.fonts?.addEventListener?.('loadingdone', remeasure);
 
     return () => {
       cancelled = true;
+      window.clearTimeout(timer);
+      document.fonts?.removeEventListener?.('loadingdone', remeasure);
       gsap.ticker.remove(tick);
       gsap.ticker.lagSmoothing(500, 33);
       lenis.destroy();

@@ -59,7 +59,7 @@ function squarify(values: number[], W: number, H: number): Rect[] {
 const SHAPES = { wide: 1.78, tall: 0.62 };
 
 /**
- * The ten most-watched reels, sized by how many people watched them: each
+ * Ten of the most-watched reels, sized by how many people watched them: each
  * tile's area is its view count. The largest tiles play their silent previews
  * while on screen; the rest play when pointed at or focused. Any tile opens the
  * full reel with sound.
@@ -118,7 +118,7 @@ export const TopReels: React.FC = () => {
     <section ref={root} aria-labelledby="top-title" className="relative py-[clamp(72px,10vw,150px)]">
       <div className="frame">
         <h3 id="top-title" className="leading-[0.86]" data-top-in>
-          <span className="t-anton block text-[clamp(3rem,9vw,9.5rem)]">The ten</span>
+          <span className="t-anton block text-[clamp(3rem,9vw,9.5rem)]">Ten of the</span>
           <span className="t-serif-i block text-[clamp(3rem,8.6vw,9rem)] text-[var(--reel-pink)]">most watched.</span>
         </h3>
         <p className="t-body mt-5 max-w-[52ch] text-ink-2" data-top-in>
@@ -130,7 +130,7 @@ export const TopReels: React.FC = () => {
           data-map
           className="relative mt-[clamp(28px,4vw,56px)] w-full"
           style={{ aspectRatio: String(SHAPES[shape]) }}
-          aria-label="The ten most watched reels, most watched first"
+          aria-label="Ten of the most watched reels, most watched first"
         >
           {rects.map((r) => (
             <Tile key={TOP_REELS[r.i].code} reel={TOP_REELS[r.i]} rank={r.i + 1} rect={r} autoplay={shape === 'tall' ? r.i === 0 : r.i < 4} />

@@ -71,6 +71,14 @@ export const Hero: React.FC = () => {
     }
   });
 
+  // Fonts can arrive after first paint (the stylesheet doesn't block): the full
+  // stop moves with them, so the instrument re-measures where it is aiming.
+  useEffect(() => {
+    const onFonts = () => instRef.current?.reaim();
+    document.fonts?.addEventListener?.('loadingdone', onFonts);
+    return () => document.fonts?.removeEventListener?.('loadingdone', onFonts);
+  }, []);
+
   const release = useCallback(() => {
     releaseRequested.current = true;
     instRef.current?.release();

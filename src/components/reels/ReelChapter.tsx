@@ -8,7 +8,7 @@ import { OneCalendar } from './OneCalendar';
 
 /**
  * swastik.mov: the second craft. It opens on the cut from "works once" to the
- * camera, lays every post out as an edit, sizes the ten most watched by their
+ * camera, lays every post out as an edit, sizes ten of the most watched by their
  * views, and closes on one calendar holding both crafts.
  */
 export const ReelChapter: React.FC = () => (

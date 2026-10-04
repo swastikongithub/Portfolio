@@ -6,7 +6,8 @@
  *   the way Instagram rounds it ("149K" is stored as 149000). Photos have none.
  * - `caption` is the first line of the post's own caption, trimmed, in the
  *   author's words. Hashtags are left out.
- * - Covers live in /public/media/reels; the ten most-watched reels also ship a
+ * - Covers live in /public/media/reels; the ten featured reels (the most watched,
+ *   leaving out one political reel that stays in the archive) also ship a
  *   six-second silent preview and the full reel, re-encoded for the web.
  */
 
@@ -22,8 +23,10 @@ export interface Reel {
   views?: number;
   /** Shape of the cover frame: most reels are shot landscape. */
   shape: 'wide' | 'tall';
-  /** Ships a preview loop and the full reel (the ten most watched). */
+  /** Ships a preview loop and the full reel (the ten featured reels). */
   video?: boolean;
+  /** Kept in the archive but left out of the featured ten (a political reel). */
+  unfeatured?: boolean;
   /** Where this reel meets the engineering work. */
   crossover?: string;
 }
@@ -39,7 +42,7 @@ export const PROFILE = {
 
 /** Newest first, as on the grid (the pinned photo is placed by its date). */
 export const REELS: Reel[] = [
-  { code: 'DbD5Fk1N5vy', kind: 'reel', date: '2026-07-21', caption: 'If this offended you, ask yourself why.', views: 20100, shape: 'tall', video: true },
+  { code: 'DbD5Fk1N5vy', kind: 'reel', date: '2026-07-21', caption: 'If this offended you, ask yourself why.', views: 20100, shape: 'tall', unfeatured: true },
   { code: 'DasTBY3NCHC', kind: 'reel', date: '2026-07-12', caption: 'There are dozens of small habits that shape how people perceive you.', views: 6408, shape: 'wide' },
   { code: 'DY7IOGbEyLV', kind: 'carousel', date: '2026-05-29', caption: 'In the 🔁', shape: 'tall' },
   { code: 'DY1A0k7z3-T', kind: 'reel', date: '2026-05-27', caption: 'Share your experience if this scam ever happened to you or your friends.', views: 3466, shape: 'wide' },
@@ -67,7 +70,7 @@ export const REELS: Reel[] = [
   { code: 'DSl3imZklIp', kind: 'reel', date: '2025-12-23', label: 'Post 31', caption: 'Some cases become examples of “the system working.”', views: 4554, shape: 'wide' },
   { code: 'DSjJMtXEsCQ', kind: 'reel', date: '2025-12-22', label: 'Post 30', caption: 'Real friendships aren’t always comfortable.', views: 5250, shape: 'tall' },
   { code: 'DSg5RsdEQIh', kind: 'reel', date: '2025-12-21', label: 'Post 29', caption: 'Comment “BGM”.', views: 149000, shape: 'wide', video: true },
-  { code: 'DSeM7JykR3z', kind: 'reel', date: '2025-12-20', label: 'Post 28', caption: 'Rather Lie ft. LPU.', views: 8280, shape: 'wide', crossover: 'An edit of the LPU campus: the same buildings LPU Reserve books rooms in.' },
+  { code: 'DSeM7JykR3z', kind: 'reel', date: '2025-12-20', label: 'Post 28', caption: 'Rather Lie ft. LPU.', views: 8280, shape: 'wide', video: true, crossover: 'An edit of the LPU campus, the university LPU Reserve is built for.' },
   { code: 'DSbaZczEvUy', kind: 'reel', date: '2025-12-19', label: 'Post 27', caption: 'Filters don’t just change your face. They change what your brain accepts as normal.', views: 17800, shape: 'wide', video: true },
   { code: 'DSZnRl7EROu', kind: 'reel', date: '2025-12-18', label: 'Post 26', caption: 'Comfort isn’t peace. It’s a pause button.', views: 3048, shape: 'wide' },
   { code: 'DSWbE9qkgRU', kind: 'reel', date: '2025-12-17', label: 'Post 25', caption: 'One good clip is built on dozens of bad ones.', views: 8674, shape: 'tall', video: true },
@@ -80,7 +83,7 @@ export const REELS: Reel[] = [
   { code: 'DSF6qRKkhan', kind: 'reel', date: '2025-12-10', label: 'Post 18', caption: '200 isn’t viral. It’s not flex-worthy. But it’s real.', views: 3916, shape: 'wide' },
   { code: 'DSDH8V5ksqF', kind: 'reel', date: '2025-12-09', label: 'Post 17', caption: 'Most creators aren’t fearless. They just stopped asking for permission.', views: 3689, shape: 'wide' },
   { code: 'DSAhUsQkllC', kind: 'reel', date: '2025-12-08', label: 'Post 16', caption: 'Some words are meant to hurt you.', views: 3460, shape: 'tall' },
-  { code: 'DR7etYQkr7f', kind: 'reel', date: '2025-12-06', label: 'Post 15', caption: 'Turns out, readiness comes after you start.', views: 3938, shape: 'wide' },
+  { code: 'DR7etYQkr7f', kind: 'reel', date: '2025-12-06', label: 'Post 15', caption: 'I waited because I thought I had to feel ready. Turns out, readiness comes after you start.', views: 3938, shape: 'wide' },
   { code: 'DR2V4woESAu', kind: 'reel', date: '2025-12-04', label: 'Post 14/14', caption: 'Started at 0. 14 days of posting without skipping.', views: 7843, shape: 'wide' },
   { code: 'DRzv7OzEvl4', kind: 'reel', date: '2025-12-03', label: 'Post 13/14', caption: 'The worst mistake you can make when you’re young isn’t failing.', views: 4262, shape: 'wide' },
   { code: 'DRw_MEuEiOz', kind: 'reel', date: '2025-12-02', label: 'Post 12/14', caption: '', views: 4263, shape: 'wide' },
@@ -100,8 +103,10 @@ export const REELS: Reel[] = [
 /** Oldest first: the order they were made in. */
 export const REELS_CHRONO = [...REELS].sort((a, b) => a.date.localeCompare(b.date) || REELS.indexOf(b) - REELS.indexOf(a));
 
-/** The ten most-watched reels, most watched first. */
-export const TOP_REELS = REELS.filter((r) => r.views).sort((a, b) => b.views! - a.views!).slice(0, 10);
+/** The ten featured reels: the most watched, minus any left out on purpose, most watched first. */
+export const TOP_REELS = REELS.filter((r) => r.views && !r.unfeatured)
+  .sort((a, b) => b.views! - a.views!)
+  .slice(0, 10);
 
 export const reelUrl = (r: Reel) => `https://www.instagram.com/${r.kind === 'reel' ? 'reel' : 'p'}/${r.code}/`;
 export const coverSrc = (r: Reel) => `/media/reels/covers/${r.code}.webp`;
@@ -109,7 +114,7 @@ export const thumbSrc = (r: Reel) => `/media/reels/thumbs/${r.code}.webp`;
 export const previewSrc = (r: Reel) => `/media/reels/${r.code}.preview.mp4`;
 export const fullSrc = (r: Reel) => `/media/reels/${r.code}.mp4`;
 
-/** Views summed over every reel (a lower bound: Instagram rounds large counts down to the thousand). */
+/** Views summed over every reel. Instagram rounds large counts, so present this rounded down (see `viewsFloor`). */
 export const TOTAL_VIEWS = REELS.reduce((s, r) => s + (r.views ?? 0), 0);
 export const REEL_COUNT = REELS.filter((r) => r.kind === 'reel').length;
 
@@ -135,3 +140,6 @@ export const fmtDate = (iso: string, opts: Intl.DateTimeFormatOptions = { day: '
 
 /** A caption as a quotation, without doubling quotes it already has. */
 export const quoted = (c: string) => (/[“”"]/.test(c) ? c : `“${c}”`);
+
+/** Total views, rounded down to the ten thousand: safe however Instagram rounded each count. */
+export const viewsFloor = () => `${Math.floor(TOTAL_VIEWS / 10000) * 10}K+`;
