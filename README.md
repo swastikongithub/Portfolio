@@ -15,9 +15,16 @@ second time something happens, and each guarantee is enforced in the database.
 
 ## Structure
 
-- **Home** is signal, not documentation: a live 3D run of LPU Reserve's concurrency test converging on the
-  full stop of the headline, a dive through that slot into the work explorer (one pinned section, four
-  systems), a short About and contact.
+- **Home** tells one story, in chapters:
+  1. *The claim*: a live 3D run of LPU Reserve's concurrency test converging on the full stop of the headline.
+  2. *The dive* through that slot into a dark stage.
+  3. *Everything happens twice*: the headline duplicates and the copy is refused. Then each system meets its
+     duplicate on one wire, with the project's real answer (`23P01`, the last-owner refusal, `IntegrityError`, 0 rows).
+  4. *Four systems*: the pinned work explorer.
+  5. *The record*: a git graph of all 115 commits on the four main branches (9 Sep to 4 Oct 2026). It
+     scrolls past a playhead while a counter adds them up.
+  6. *Who built them*: a portrait and habits that tick in as checks, each with its evidence.
+  7. *Write to me*.
 - **Case studies** (`/projects/:slug`) are the deep layer: a scroll-driven scene of the mechanism, a
   hands-on figure, the problem, what was built, the story, the request path, decisions, safeguards, known
   limits and the stack. They are lazy-loaded.
@@ -69,9 +76,18 @@ tiers) lives in `src/lib/interaction/config.ts`. Touch gets taps only (no drag c
 untouched); reduced motion turns the field off; without WebGL nothing is drawn and the DOM layout stands
 on its own.
 
+## The cursor
+
+On fine pointers with motion allowed, the cursor is a precise dot plus a ring with a little mass that
+stretches along its velocity (`src/components/layout/Cursor.tsx`, tuning in `interaction/config.ts`).
+Over a control the ring locks onto its box as four signal brackets. Over running text it becomes an
+I-beam. Over a live system (`[data-cursor]`) it opens into a crosshair and says what a click sends
+("click: one more attempt", "click: deliver an event"). A click leaves a ring behind. Text fields
+keep the native cursor. Touch devices and reduced motion keep the system cursor entirely.
+
 ## Content
 
-All copy lives in `src/data/portfolioData.ts`; project facts were audited against each project's local
+All copy lives in `src/data/portfolioData.ts` (including `SECOND_TIMES` and `HISTORY`, the commit counts per day from each repository's `git log`); project facts were audited against each project's local
 source and docs, and every number names the file it comes from. The résumé is served from
 `public/swastik-singh-resume.pdf`.
 

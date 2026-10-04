@@ -28,6 +28,14 @@ export const About: React.FC = () => {
           { clipPath: 'inset(100% 0% 0% 0%)' },
           { clipPath: 'inset(0% 0% 0% 0%)', ease: 'none', scrollTrigger: { trigger: '[data-portrait]', start: 'top 92%', end: 'top 40%', scrub: 0.6 } },
         );
+        // Each habit is a check that passes as you reach it, with its evidence.
+        gsap.utils.toArray<HTMLElement>('[data-check-row]').forEach((row) => {
+          gsap
+            .timeline({ scrollTrigger: { trigger: row, start: 'top 88%', toggleActions: 'play none none reverse' } })
+            .fromTo(row.children[1], { autoAlpha: 0.35, x: -6 }, { autoAlpha: 1, x: 0, duration: 0.5, ease: 'power3.out' }, 0)
+            .fromTo(row.querySelector('[data-check]'), { rotate: -90, scale: 0.6, backgroundColor: 'transparent' }, { rotate: 0, scale: 1, backgroundColor: 'var(--signal)', duration: 0.45, ease: 'back.out(2)' }, 0.05)
+            .fromTo(row.querySelector('[data-check-path]'), { strokeDashoffset: 24 }, { strokeDashoffset: 0, duration: 0.35, ease: 'power2.out' }, 0.25);
+        });
         gsap.fromTo(
           '[data-portrait] img',
           { scale: 1.25, yPercent: -6 },
@@ -72,11 +80,18 @@ export const About: React.FC = () => {
             Science student at Lovely Professional University.
           </p>
 
-          <ul className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+          <ul className="grid gap-x-8 sm:grid-cols-2" aria-label="How I work, with the evidence">
             {HABITS.map((h) => (
-              <li key={h.title} className="border-t border-line-2 pt-3" data-reveal>
-                <h3 className="font-[700] text-[1.15rem] tracking-[-0.01em]">{h.title}</h3>
-                <p className="t-mono mt-2 text-ink-2">{h.evidence}</p>
+              <li key={h.title} className="grid grid-cols-[26px_1fr] gap-x-3.5 border-t border-line-2 py-4" data-check-row>
+                <span className="check-box" data-check aria-hidden="true">
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <path d="M4.5 10.5l3.6 3.6 7.4-8.2" data-check-path />
+                  </svg>
+                </span>
+                <div>
+                  <h3 className="font-[700] text-[1.15rem] leading-tight tracking-[-0.01em]">{h.title}</h3>
+                  <p className="t-mono mt-2 text-ink-2">{h.evidence}</p>
+                </div>
               </li>
             ))}
           </ul>

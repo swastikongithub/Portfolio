@@ -25,6 +25,14 @@ const REPLAY: Record<Mode, string> = {
   pipeline: 'Upload the résumés again',
 };
 
+/** What the cursor says a click will send, per system. */
+const CURSOR: Record<Mode, string> = {
+  race: 'click: one more attempt',
+  boundary: 'click: knock from outside',
+  dedupe: 'click: deliver an event',
+  pipeline: 'click: upload a résumé',
+};
+
 /** What each colour in the instrument means, per system. Also the text equivalent of the visual. */
 const LEGEND: Record<Mode, { key: 'signal' | 'ink' | 'ink3' | 'shape' | 'you'; text: string }[]> = {
   race: [
@@ -142,21 +150,21 @@ const PinnedExplorer: React.FC<{ scrollToY: (y: number) => void }> = ({ scrollTo
   const fact = p.facts[p.homeFact];
 
   return (
-    <section ref={root} id="work" aria-labelledby="work-title" className="relative h-[100svh] overflow-hidden">
+    <section ref={root} id="work" aria-labelledby="work-title" className="relative h-[100svh] overflow-hidden" data-cursor={CURSOR[mode]}>
       <div ref={glRef} className="absolute inset-0" aria-hidden="true" />
       {/* Where the instrument focuses: right of the text on wide screens, above it on phones. */}
       <div
         ref={anchorRef}
-        className="pointer-events-none absolute left-[calc(50%-14px)] top-[calc(30%-14px)] h-7 w-7 lg:left-[calc(71%-14px)] lg:top-[calc(50%-14px)]"
+        className="pointer-events-none absolute left-[calc(50%-14px)] top-[calc(27%-14px)] h-7 w-7 lg:left-[calc(71%-14px)] lg:top-[calc(50%-14px)]"
         aria-hidden="true"
       />
 
       <div className="frame relative flex h-full flex-col justify-end pb-6 pt-[calc(var(--header-h)+16px)] lg:justify-center lg:pb-0">
-        <div ref={panelRef} className="max-lg:rounded-[var(--r-lg)] max-lg:bg-bg/80 max-lg:p-4 max-lg:backdrop-blur-md lg:w-[44%]">
+        <div ref={panelRef} className="max-lg:-mx-1 max-lg:rounded-[var(--r-lg)] max-lg:border max-lg:border-line max-lg:bg-bg/85 max-lg:p-4 max-lg:backdrop-blur-md lg:w-[44%]">
           <h2 id="work-title" tabIndex={-1} className="t-mono text-ink-2 outline-none">
             Four systems. Each keeps one promise.
           </h2>
-          <ol className="mt-3 flex flex-wrap gap-1.5" aria-label="Projects">
+          <ol className="no-scrollbar -mx-4 mt-3 flex gap-1.5 overflow-x-auto px-4 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0" aria-label="Projects">
             {PROJECTS.map((x, i) => (
               <li key={x.slug}>
                 <button
@@ -165,7 +173,7 @@ const PinnedExplorer: React.FC<{ scrollToY: (y: number) => void }> = ({ scrollTo
                   aria-current={i === active ? 'true' : undefined}
                   data-near
                   data-magnetic
-                  className={`btn btn-sm !min-h-8 !px-3 !text-[0.82rem] ${i === active ? 'btn-signal' : 'near-aware'}`}
+                  className={`btn btn-sm !min-h-9 shrink-0 whitespace-nowrap !px-3 !text-[0.82rem] ${i === active ? 'btn-signal' : 'near-aware'}`}
                 >
                   {x.title}
                 </button>
@@ -173,11 +181,11 @@ const PinnedExplorer: React.FC<{ scrollToY: (y: number) => void }> = ({ scrollTo
             ))}
           </ol>
 
-          <article key={p.slug} className="mt-[clamp(20px,4svh,48px)]" aria-live="polite">
-            <p className="t-mono text-ink-2" data-x-in>
+          <article key={p.slug} className="mt-[clamp(14px,3svh,48px)]" aria-live="polite">
+            <p className="t-mono text-ink-2 max-sm:hidden" data-x-in>
               {p.kind}
             </p>
-            <h3 className="mt-2 font-[800] leading-[0.88] tracking-[-0.05em] text-[clamp(2.6rem,7vw,7rem)]">
+            <h3 className="mt-2 font-[800] leading-[0.88] tracking-[-0.05em] text-[clamp(2.3rem,7vw,7rem)]">
               <span className="sr-only">{p.title}</span>
               <span aria-hidden="true" className="block overflow-hidden pb-[0.06em]">
                 <Letters text={p.title} attr="data-x-letter" />
@@ -189,10 +197,10 @@ const PinnedExplorer: React.FC<{ scrollToY: (y: number) => void }> = ({ scrollTo
             <p className="t-body mt-3 max-w-[40ch] text-ink-2 max-sm:hidden" data-x-in>
               {p.twice}
             </p>
-            <div className="mt-5 flex flex-wrap items-end gap-x-8 gap-y-4" data-x-in>
+            <div className="mt-4 flex flex-wrap items-end gap-x-8 gap-y-4 sm:mt-5" data-x-in>
               <div>
                 <p className="t-mono-lg t-num text-[clamp(1.8rem,3vw,2.6rem)] font-[600] leading-none">{fact.value}</p>
-                <p className="t-small mt-1 max-w-[26ch] text-ink-2">{fact.label}</p>
+                <p className="t-small mt-1 max-w-[30ch] text-ink-2">{fact.label}</p>
               </div>
               <ul className="flex flex-wrap gap-1.5 max-sm:hidden" aria-label={`${p.title} stack`}>
                 {p.stackShort.slice(0, 4).map((s) => (
@@ -202,7 +210,7 @@ const PinnedExplorer: React.FC<{ scrollToY: (y: number) => void }> = ({ scrollTo
                 ))}
               </ul>
             </div>
-            <div className="mt-6 flex flex-wrap gap-2.5" data-x-in>
+            <div className="mt-5 flex flex-wrap gap-2 sm:mt-6 sm:gap-2.5" data-x-in>
               <TransitionLink to={`/projects/${p.slug}`} className="btn btn-signal" data-magnetic>
                 Open the case study
               </TransitionLink>

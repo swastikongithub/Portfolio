@@ -687,3 +687,83 @@ html.has-cursor [contenteditable='true'] {
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
+
+/* The wire in "Everything happens twice" (SecondTime.tsx). */
+.wire-lane {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: block;
+  height: 1.5px;
+  transform-origin: left;
+  background: linear-gradient(90deg, transparent, var(--line-2) 8%, var(--line-2));
+}
+.wire-ring {
+  position: absolute;
+  display: block;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border-radius: 999px;
+  border-width: 1.5px;
+  border-style: solid;
+  opacity: 0;
+}
+.wire-stamp {
+  display: inline-block;
+  transform-origin: left center;
+  padding: 0.12em 0.4em;
+  border: 2px solid var(--ink-2);
+  border-radius: 6px;
+  color: var(--ink-2);
+  font-size: clamp(1.1rem, 2.1vw, 2.1rem);
+  max-width: 100%;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+/* Horizontal rails that scroll by touch without showing a scrollbar. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.wire-out {
+  left: calc(56% + 22px);
+}
+/* Narrow wires: the answer takes the full width under the second lane. */
+@media (max-width: 1023px) {
+  .wire-out {
+    left: 0;
+  }
+  .wire-stamp {
+    font-size: clamp(1.15rem, 6vw, 1.8rem);
+  }
+}
+
+/* About: each habit is a passing check (ticked by default; About.tsx animates it in). */
+.check-box {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-top: 1px;
+  border: 1.5px solid var(--signal);
+  border-radius: 999px;
+  background: var(--signal);
+}
+.check-box svg {
+  width: 16px;
+  height: 16px;
+}
+.check-box path {
+  stroke: var(--on-signal);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 24;
+  stroke-dashoffset: 0;
+}

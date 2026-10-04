@@ -7,6 +7,7 @@ import { MechanismMarquee, Stage } from '../home/Stage';
 import { WorkExplorer } from '../home/WorkExplorer';
 import { SecondTime } from '../home/SecondTime';
 import { History } from '../home/History';
+import { ScrollStatus } from '../home/ScrollStatus';
 import { About } from '../home/About';
 import { Contact } from '../home/Contact';
 import { SiteFooter } from '../layout/SiteFooter';
@@ -26,15 +27,25 @@ export const HomePage: React.FC = () => {
       <main id="main" tabIndex={-1} className="outline-none">
         <Hero />
         <Stage>
-          <SecondTime />
+          {/* Pinned sections each get a wrapper React owns: GSAP's pin spacers then never
+              move a node React is about to insert next to (the explorer swaps to a list
+              when WebGL fails). */}
+          <div>
+            <SecondTime />
+          </div>
           <MechanismMarquee />
-          <WorkExplorer />
-          <History />
+          <div>
+            <WorkExplorer />
+          </div>
+          <div>
+            <History />
+          </div>
         </Stage>
         <About />
         <Contact />
       </main>
       <SiteFooter />
+      <ScrollStatus />
     </InstrumentProvider>
   );
 };

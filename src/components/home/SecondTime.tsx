@@ -28,8 +28,10 @@ export const SecondTime: React.FC = () => {
       const scenes = gsap.utils.toArray<HTMLElement>('[data-scene]', el);
       const timelines = scenes.map((s) => sceneTimeline(s));
       if (!pinned) {
-        timelines.forEach((tl) => tl.progress(1));
-        gsap.set('[data-ghost]', { yPercent: 100 });
+        const settle = () => timelines.forEach((tl) => tl.invalidate().progress(0).progress(1));
+        settle();
+        // Final positions depend on label widths: measure again once the mono face has loaded.
+        document.fonts?.ready.then(settle);
         gsap.set('[data-ghost-strike]', { backgroundSize: '100% 0.07em' });
         return;
       }
@@ -38,7 +40,7 @@ export const SecondTime: React.FC = () => {
       gsap.fromTo(
         '[data-intro-w]',
         { yPercent: 110 },
-        { yPercent: 0, ease: 'none', stagger: 0.08, scrollTrigger: { trigger: el, start: 'top 85%', end: 'top 15%', scrub: 0.5 } },
+        { yPercent: 0, ease: 'none', stagger: 0.08, scrollTrigger: { trigger: el, start: 'top bottom', end: 'top 25%', scrub: 0.5 } },
       );
 
       const master = gsap.timeline({
@@ -54,7 +56,7 @@ export const SecondTime: React.FC = () => {
       });
       // The line happens twice: its copy slides out from under it and is refused.
       master
-        .fromTo('[data-ghost]', { yPercent: 0 }, { yPercent: 100, duration: 0.35, ease: 'power2.out' }, 0)
+        .fromTo('[data-ghost]', { yPercent: -100 }, { yPercent: 0, duration: 0.35, ease: 'power2.out' }, 0)
         .fromTo('[data-ghost-strike]', { backgroundSize: '0% 0.07em' }, { backgroundSize: '100% 0.07em', duration: 0.18 }, 0.32)
         .fromTo('[data-intro-sub]', { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.15 }, 0.42)
         .to('[data-intro]', { autoAlpha: 0, y: -60, duration: 0.25, ease: 'power1.in' }, 0.7)
@@ -98,13 +100,13 @@ export const SecondTime: React.FC = () => {
               ))}
             </span>
             {/* The duplicate: the same line again, sliding out from under it, refused. */}
-            <span aria-hidden="true" data-ghost className="absolute inset-x-0 top-0 block text-ink-3">
+            <span aria-hidden="true" data-ghost className="relative block text-ink-3">
               <span data-ghost-strike className="ghost-strike">
                 Everything happens twice.
               </span>
             </span>
           </h2>
-          <p data-intro-sub className="t-lead mt-[calc(clamp(2.6rem,8.4vw,8.6rem)*1.95)] max-w-[40ch] text-ink-2">
+          <p data-intro-sub className="t-lead mt-[clamp(18px,3svh,40px)] max-w-[40ch] text-ink-2">
             A double click, a retried webhook, a race between two admins. Here is what each system does with the second
             copy.
           </p>
@@ -135,16 +137,28 @@ export const SecondTime: React.FC = () => {
   );
 };
 
+/** LPU Reserve's crowd: the other 499, abstracted. Fixed offsets, so every render is the same. */
+const CROWD = Array.from({ length: 30 }, (_, i) => ({
+  delay: ((i * 7919) % 30) / 30,
+  back: 14 + ((i * 3571) % 70),
+  dy: (((i * 2971) % 100) / 100 - 0.5) * 2,
+}));
+
+/** Lane heights on the wire, as percentages. */
+const LANE_A = 26;
+const LANE_B = 58;
+
 const SceneView: React.FC<{ scene: Scene; pinned: boolean }> = ({ scene, pinned }) => {
   const p = projectOf(scene.slug);
   const crowd = scene.slug === 'lpu-reserve';
+  const gate = `${GATE * 100}%`;
   return (
     <article
       data-scene
       data-passes={scene.first.passes ? '' : undefined}
       className={
         pinned
-          ? 'invisible absolute inset-x-[var(--gutter)] bottom-[clamp(20px,5svh,64px)] top-[calc(var(--header-h)+56px)] grid content-center gap-[clamp(20px,4svh,48px)] lg:grid-cols-12 lg:items-center lg:gap-x-[var(--gutter)]'
+          ? 'invisible absolute inset-x-[var(--gutter)] bottom-[clamp(16px,4svh,56px)] top-[calc(var(--header-h)+48px)] grid content-center gap-[clamp(18px,3.5svh,44px)] lg:grid-cols-12 lg:items-center lg:gap-x-[var(--gutter)]'
           : 'grid gap-8 border-t border-line-2 pt-10 lg:grid-cols-12 lg:items-center lg:gap-x-[var(--gutter)]'
       }
     >
@@ -152,7 +166,7 @@ const SceneView: React.FC<{ scene: Scene; pinned: boolean }> = ({ scene, pinned 
         <h3 className="t-mono text-signal-text" data-s-in>
           {p.title}
         </h3>
-        <p className="mt-3 font-[750] leading-[1.02] tracking-[-0.035em] text-[clamp(1.55rem,3.6vw,3.5rem)]" data-s-in>
+        <p className="mt-3 font-[750] leading-[1.02] tracking-[-0.035em] text-[clamp(1.5rem,3.5vw,3.4rem)]" data-s-in>
           {scene.event}
         </p>
         <p className="mt-[clamp(14px,3svh,32px)] max-lg:hidden" data-s-law>
@@ -161,40 +175,61 @@ const SceneView: React.FC<{ scene: Scene; pinned: boolean }> = ({ scene, pinned 
         </p>
       </div>
 
-      {/* The wire. Decorative: the sentence below says the same. */}
+      {/* The wire. Decorative: the sentence after it says the same. */}
       <div className="lg:col-span-7" aria-hidden="true">
-        <div data-wire className="relative h-[clamp(190px,30svh,340px)]">
-          <span data-lane className="absolute inset-x-0 top-[30%] block h-px origin-left bg-line-2" />
-          <span data-lane className="absolute inset-x-0 top-[66%] block h-px origin-left bg-line-2" />
+        <div data-wire className="relative h-[clamp(230px,40svh,440px)] text-[12px] sm:text-[13px]">
+          <span data-lane className="wire-lane" style={{ top: `${LANE_A}%` }} />
+          <span data-lane className="wire-lane" style={{ top: `${LANE_B}%` }} />
+          <span
+            data-gate-label
+            className="t-mono absolute top-0 -translate-x-1/2 whitespace-nowrap rounded-[3px] border border-line-2 px-1.5 py-0.5 text-ink"
+            style={{ left: gate }}
+          >
+            {scene.gate}
+          </span>
           <div
             data-gate
-            className="absolute bottom-[14%] top-[14%] w-[clamp(10px,1.2vw,16px)] -translate-x-1/2 overflow-hidden rounded-full border border-ink-2"
-            style={{ left: `${GATE * 100}%` }}
+            className="absolute top-[12%] w-[clamp(12px,1.3vw,18px)] -translate-x-1/2 overflow-hidden rounded-full border-[1.5px] border-ink-2 bg-bg"
+            style={{ left: gate, bottom: `${100 - LANE_B - 14}%` }}
           >
             <span data-gate-flash className="absolute inset-0 block bg-ink opacity-0" />
           </div>
-          <span data-gate-label className="t-mono absolute top-0 -translate-x-1/2 -translate-y-full whitespace-nowrap pb-1 text-ink-2" style={{ left: `${GATE * 100}%` }}>
-            {scene.gate}
-          </span>
+          <span data-ring-a className="wire-ring border-signal" style={{ left: gate, top: `${LANE_A}%` }} />
+          <span data-ring-b className="wire-ring border-ink-2" style={{ left: gate, top: `${LANE_B}%` }} />
 
-          <Packet attr="a" top="30%" label={scene.first.label} />
-          <Packet attr="b" top="66%" label={scene.second.label} crowd={crowd} />
+          {crowd &&
+            CROWD.map((d, i) => (
+              <span
+                key={i}
+                data-dot
+                data-back={d.back}
+                data-dy={d.dy}
+                data-delay={d.delay}
+                className="absolute left-0 block h-[7px] w-[7px] -translate-y-1/2 rounded-full bg-ink-2"
+                style={{ top: `${LANE_B}%` }}
+              />
+            ))}
+
+          <Packet attr="b" top={`${LANE_B}%`} label={scene.second.label} />
+          <Packet attr="a" top={`${LANE_A}%`} label={scene.first.label} />
 
           <span
             data-out-a
-            className={`t-mono absolute right-0 top-[30%] -translate-y-[calc(100%+12px)] rounded-[3px] px-1.5 py-0.5 ${
-              scene.first.passes ? 'bg-signal text-on-signal' : 'border border-ink-3 text-ink-2'
+            className={`t-mono absolute right-0 rounded-[3px] px-1.5 py-0.5 ${
+              scene.first.passes ? 'bg-signal text-on-signal' : 'border border-dashed border-ink-3 text-ink-2'
             }`}
+            style={{ top: `calc(${LANE_A}% + 22px)` }}
           >
             {scene.first.outcome}
           </span>
-          <span
-            data-out-b
-            className="t-mono absolute top-[calc(66%+14px)] max-w-[44%] text-ink-2"
-            style={{ left: `calc(${GATE * 100}% + 18px)` }}
-          >
-            {scene.second.outcome}
-          </span>
+          <div className="wire-out absolute right-0" style={{ top: `calc(${LANE_B}% + 22px)` }}>
+            <span data-stamp className="wire-stamp t-mono">
+              {scene.stamp}
+            </span>
+            <span data-out-b className="t-mono mt-2 block max-w-[34ch] leading-[1.45] text-ink-2">
+              {scene.second.outcome}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -208,15 +243,9 @@ const SceneView: React.FC<{ scene: Scene; pinned: boolean }> = ({ scene, pinned 
   );
 };
 
-const Packet: React.FC<{ attr: 'a' | 'b'; top: string; label: string; crowd?: boolean }> = ({ attr, top, label, crowd }) => (
-  <span data-packet={attr} className="absolute left-0 block -translate-y-1/2" style={{ top }}>
-    {crowd && (
-      <>
-        <span className="absolute inset-0 translate-x-[-10px] rounded-full border border-ink-3/50" />
-        <span className="absolute inset-0 translate-x-[-5px] rounded-full border border-ink-3/70 bg-bg" />
-      </>
-    )}
-    <span data-pill className="t-mono relative block whitespace-nowrap rounded-full border border-ink bg-bg px-2.5 py-1 text-ink">
+const Packet: React.FC<{ attr: 'a' | 'b'; top: string; label: string }> = ({ attr, top, label }) => (
+  <span data-packet={attr} className="absolute left-0 z-[1] block -translate-y-1/2" style={{ top }}>
+    <span data-pill className="t-mono relative block whitespace-nowrap rounded-full border-[1.5px] border-ink bg-bg px-3 py-1.5 text-ink">
       {label}
     </span>
   </span>
@@ -231,41 +260,68 @@ function sceneTimeline(scene: HTMLElement) {
   const pillA = a.querySelector('[data-pill]');
   const pillB = b.querySelector('[data-pill]');
   const flash = q('[data-gate-flash]');
+  const dots = q('[data-dot]') as HTMLElement[];
   const passes = scene.hasAttribute('data-passes');
-  const stop = (el: HTMLElement) => () => wire.offsetWidth * GATE - el.offsetWidth - 14;
+  const gateX = () => wire.offsetWidth * GATE;
+  const stop = (el: HTMLElement) => () => gateX() - el.offsetWidth - 16;
   const end = (el: HTMLElement) => () => wire.offsetWidth - el.offsetWidth;
+  const half = () => (wire.offsetHeight * (LANE_B - LANE_A)) / 200;
+  const refused = { color: 'var(--ink-3)', borderColor: 'var(--ink-3)', borderStyle: 'dashed', duration: 0.03 };
 
   const tl = gsap.timeline({ defaults: { ease: 'none' } });
-  tl.fromTo(q('[data-s-in]'), { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.16, stagger: 0.05, ease: EASE.out }, 0)
-    .fromTo(q('[data-lane]'), { scaleX: 0 }, { scaleX: 1, duration: 0.2, stagger: 0.04, ease: 'power2.out' }, 0.04)
-    .fromTo(q('[data-gate], [data-gate-label]'), { autoAlpha: 0, scaleY: 0.3 }, { autoAlpha: 1, scaleY: 1, duration: 0.1, ease: 'back.out(2)' }, 0.14)
-    // The first copy.
-    .fromTo(a, { x: -12, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.04 }, 0.18)
-    .to(a, { x: stop(a), duration: 0.18, ease: 'power1.in' }, 0.2)
-    .to(flash, { opacity: 0.9, duration: 0.02 }, 0.38)
-    .to(flash, { opacity: 0, duration: 0.06 }, 0.4);
+  tl.fromTo(q('[data-s-in]'), { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.14, stagger: 0.05, ease: EASE.out }, 0)
+    .fromTo(q('[data-lane]'), { scaleX: 0 }, { scaleX: 1, duration: 0.18, stagger: 0.04, ease: 'power2.out' }, 0.04)
+    .fromTo(q('[data-gate]'), { autoAlpha: 0, scaleY: 0 }, { autoAlpha: 1, scaleY: 1, duration: 0.1, ease: 'back.out(1.7)' }, 0.1)
+    .fromTo(q('[data-gate-label]'), { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.06 }, 0.14)
+    // One request, then its copy: they start as one and split onto two lanes.
+    .fromTo(a, { x: -10, y: half, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.03 }, 0.15)
+    .fromTo(b, { x: -10, y: () => -half(), autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.03 }, 0.15)
+    .to([a, b], { y: 0, duration: 0.08, ease: 'power2.inOut' }, 0.19)
+    // The first copy reaches the guard.
+    .to(a, { x: stop(a), duration: 0.15, ease: 'power1.in' }, 0.24)
+    .to(flash, { opacity: 0.95, duration: 0.015 }, 0.39)
+    .to(flash, { opacity: 0, duration: 0.06 }, 0.405);
   if (passes) {
     tl.set(flash, { backgroundColor: 'var(--signal)' }, 0)
-      .to(a, { x: end(a), duration: 0.14, ease: 'power2.out' }, 0.38)
-      .to(pillA, { backgroundColor: 'var(--signal)', color: 'var(--on-signal)', borderColor: 'var(--signal)', duration: 0.04 }, 0.4);
+      .fromTo(q('[data-ring-a]'), { scale: 0.3, autoAlpha: 1 }, { scale: 3.2, autoAlpha: 0, duration: 0.12, ease: 'power2.out' }, 0.39)
+      .to(a, { x: end(a), duration: 0.12, ease: 'power2.out' }, 0.39)
+      .to(pillA, { backgroundColor: 'var(--signal)', color: 'var(--on-signal)', borderColor: 'var(--signal)', duration: 0.03 }, 0.4);
   } else {
-    tl.to(a, { keyframes: { x: ['+=6', '-=10', '+=4'] }, duration: 0.05 }, 0.38).to(
-      pillA,
-      { color: 'var(--ink-3)', borderColor: 'var(--ink-3)', borderStyle: 'dashed', duration: 0.03 },
-      0.4,
-    );
+    tl.set(flash, { backgroundColor: 'var(--ink)' }, 0)
+      .fromTo(q('[data-ring-a]'), { scale: 0.3, autoAlpha: 1 }, { scale: 2.4, autoAlpha: 0, duration: 0.1, ease: 'power2.out' }, 0.39)
+      .to(a, { keyframes: { x: ['+=7', '-=12', '+=5'] }, duration: 0.05 }, 0.39)
+      .to(pillA, refused, 0.41);
   }
-  tl.fromTo(q('[data-out-a]'), { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.06, ease: 'back.out(2)' }, 0.5)
-    // The second copy: same wire, same guard, a different answer.
-    .fromTo(b, { x: -12, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.04 }, 0.44)
-    .to(b, { x: stop(b), duration: 0.18, ease: 'power1.in' }, 0.46)
-    .set(flash, { backgroundColor: 'var(--ink)' }, 0.63)
-    .to(flash, { opacity: 0.9, duration: 0.02 }, 0.64)
-    .to(flash, { opacity: 0, duration: 0.06 }, 0.66)
-    .to(b, { keyframes: { x: ['+=7', '-=12', '+=5'] }, duration: 0.05 }, 0.64)
-    .to(pillB, { color: 'var(--ink-3)', borderColor: 'var(--ink-3)', borderStyle: 'dashed', duration: 0.03 }, 0.66)
-    .fromTo(q('[data-out-b]'), { autoAlpha: 0, x: -8 }, { autoAlpha: 1, x: 0, duration: 0.06, ease: EASE.out }, 0.7)
-    .fromTo(q('[data-s-law]'), { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.1, ease: EASE.out }, 0.76)
-    .to({}, { duration: 0.14 }, 0.86);
+  tl.fromTo(q('[data-out-a]'), { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.05, ease: 'back.out(2)' }, 0.5);
+
+  // LPU Reserve: the crowd arrives with the second copy and piles up against the guard.
+  dots.forEach((d) => {
+    const at = 0.3 + +d.dataset.delay! * 0.26;
+    const jitter = (+d.dataset.back! % 7) - 3;
+    tl.fromTo(d, { x: -8, autoAlpha: 0 }, { x: () => gateX() - 14 + jitter, autoAlpha: 1, duration: 0.1, ease: 'power1.in' }, at).to(
+      d,
+      {
+        x: () => gateX() - 14 - +d.dataset.back! * 1.6,
+        y: () => +d.dataset.dy! * wire.offsetHeight * 0.13,
+        opacity: 0.45,
+        duration: 0.08,
+        ease: 'power3.out',
+      },
+      at + 0.1,
+    );
+  });
+
+  // The second copy: same wire, same guard, a different answer.
+  tl.to(b, { x: stop(b), duration: 0.18, ease: 'power1.in' }, 0.44)
+    .set(flash, { backgroundColor: 'var(--ink)' }, 0.615)
+    .to(flash, { opacity: 0.95, duration: 0.015 }, 0.62)
+    .to(flash, { opacity: 0, duration: 0.06 }, 0.635)
+    .fromTo(q('[data-ring-b]'), { scale: 0.3, autoAlpha: 1 }, { scale: 2.6, autoAlpha: 0, duration: 0.12, ease: 'power2.out' }, 0.62)
+    .to(b, { keyframes: { x: ['+=8', '-=14', '+=6'] }, duration: 0.05 }, 0.62)
+    .to(pillB, refused, 0.64)
+    .fromTo(q('[data-stamp]'), { autoAlpha: 0, scale: 1.9, rotate: -12 }, { autoAlpha: 1, scale: 1, rotate: -4, duration: 0.06, ease: 'power4.in' }, 0.66)
+    .fromTo(q('[data-out-b]'), { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.06, ease: EASE.out }, 0.72)
+    .fromTo(q('[data-s-law]'), { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.1, ease: EASE.out }, 0.78)
+    .to({}, { duration: 0.12 }, 0.88);
   return tl;
 }

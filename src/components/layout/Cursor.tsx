@@ -60,9 +60,11 @@ export const Cursor: React.FC<{ enabled: boolean }> = ({ enabled }) => {
         lock = control.getBoundingClientRect();
         return setMode('lock', control.dataset.cursorLabel ?? '');
       }
+      // Running text reads as text even over a system; headings over a system aim at it.
+      if (t.closest('p, li, blockquote, code, pre, dd, dt, figcaption, td, th')) return setMode('text');
       const sys = t.closest<HTMLElement>('[data-cursor]');
       if (sys) return setMode('system', sys.dataset.cursor ?? '');
-      if (t.closest('p, h1, h2, h3, h4, li, blockquote, code, pre, dd, dt, figcaption, td, th')) return setMode('text');
+      if (t.closest('h1, h2, h3, h4')) return setMode('text');
       return setMode('free');
     };
 

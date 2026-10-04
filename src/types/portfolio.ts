@@ -108,4 +108,6 @@ export interface SecondTime {
   gate: string;
   first: { label: string; outcome: string; passes: boolean };
   second: { label: string; outcome: string };
+  /** The answer the second copy gets, as short as it can be said. */
+  stamp: string;
 }

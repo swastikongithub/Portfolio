@@ -53,6 +53,8 @@ export const History: React.FC = () => {
       const dayW = () => tr.querySelector<HTMLElement>('[data-axis]')!.offsetWidth / DAYS;
       const travel = () => DAYS * dayW() - dayW() * 0.5;
       let lastDay = -2;
+      // Phones keep the two latest commits in view; wider screens three.
+      const keep = window.matchMedia('(max-width: 639px)').matches ? 2 : 3;
 
       const paint = (progress: number) => {
         const cur = progress * (DAYS - 1);
@@ -75,7 +77,7 @@ export const History: React.FC = () => {
         const passed = logItems.filter((el) => +el.dataset.day! <= d);
         logItems.forEach((el) => {
           const age = passed.length - 1 - passed.indexOf(el);
-          const shown = passed.includes(el) && age < 3;
+          const shown = passed.includes(el) && age < keep;
           el.style.order = String(-age);
           el.toggleAttribute('data-shown', shown);
           el.style.opacity = shown ? String(1 - age * 0.3) : '0';
@@ -109,12 +111,12 @@ export const History: React.FC = () => {
       className={`relative overflow-hidden ${pinned ? 'flex h-[100svh] flex-col' : 'py-[clamp(72px,10vw,140px)]'}`}
     >
       <div className={`frame ${pinned ? 'pt-[calc(var(--header-h)+clamp(8px,3svh,40px))]' : ''}`}>
-        <h2 id="record-title" className="font-[800] leading-[0.9] tracking-[-0.05em] text-[clamp(2.6rem,8vw,8rem)]">
+        <h2 id="record-title" className="font-[800] leading-[0.9] tracking-[-0.05em] text-[clamp(2.3rem,8vw,8rem)]">
           <span className="sr-only">
             {TOTAL} commits in {DAYS} days.
           </span>
           <span aria-hidden="true">
-            <span ref={countRef} className="t-num inline-block min-w-[2.6ch] text-signal">
+            <span ref={countRef} className="t-num text-signal">
               {pinned ? 0 : TOTAL}
             </span>{' '}
             commits
@@ -141,7 +143,7 @@ export const History: React.FC = () => {
         )}
         <div
           ref={track}
-          className="relative h-full min-h-[clamp(240px,34svh,380px)] w-max will-change-transform"
+          className="relative h-full min-h-[clamp(200px,32svh,380px)] w-max will-change-transform"
           style={{ paddingLeft: pinned ? 'var(--ph)' : 'var(--gutter)', paddingRight: pinned ? 'calc(100vw - var(--ph))' : 'var(--gutter)' }}
         >
           <div data-axis className="relative h-full" style={{ width: `calc(${DAYS} * var(--day))` }}>
@@ -160,6 +162,7 @@ export const History: React.FC = () => {
                 <div key={l.slug} className="absolute inset-x-0" style={{ top }}>
                   <span className="t-mono absolute -translate-y-[calc(100%+14px)] whitespace-nowrap text-ink-2" style={{ left }}>
                     {l.title}
+                    {l.note && <span className="text-ink-3">, history from {fmt(l.first)}</span>}
                   </span>
                   <span className="absolute block h-[2px] -translate-y-1/2 bg-line-2" style={{ left, width }} />
                   <span
@@ -188,8 +191,8 @@ export const History: React.FC = () => {
         </div>
       </div>
 
-      <div className={`frame ${pinned ? 'pb-[clamp(16px,4svh,40px)] pt-3' : 'mt-10'}`}>
-        <ol ref={logRef} className={pinned ? 'flex min-h-[7.5em] flex-col justify-end gap-1.5' : 'space-y-3'} aria-label="Commits worth reading">
+      <div className={`frame ${pinned ? 'pb-[clamp(16px,4svh,40px)] pt-3 lg:pb-20' : 'mt-10'}`}>
+        <ol ref={logRef} className={pinned ? 'flex min-h-[5.5em] flex-col justify-end gap-1.5 sm:min-h-[7.5em]' : 'space-y-3'} aria-label="Commits worth reading">
           {LOG.map((m) => (
             <li
               key={m.message}
@@ -216,7 +219,7 @@ export const History: React.FC = () => {
             </li>
           ))}
         </ul>
-        <p className="t-small mt-3 text-ink-3" aria-hidden="true">
+        <p className="t-small mt-3 text-ink-3 max-sm:hidden" aria-hidden="true">
           {LANES.filter((l) => l.note).map((l) => `${l.title}: ${l.note}`)}
         </p>
       </div>

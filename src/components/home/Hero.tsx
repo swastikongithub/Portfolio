@@ -207,6 +207,7 @@ export const Hero: React.FC = () => {
       <section
         ref={root}
         aria-labelledby="hero-title"
+        data-cursor="click: one more attempt"
         className="relative isolate flex min-h-[100svh] flex-col overflow-hidden"
       >
         <div ref={glRef} className="absolute inset-0 -z-10" aria-hidden="true" />
@@ -263,7 +264,7 @@ export const Hero: React.FC = () => {
             </div>
 
             <figure
-              className="col-span-4 rounded-[var(--r-md)] border border-line bg-bg/75 p-4 backdrop-blur-md md:col-span-6 lg:col-span-4 lg:col-start-9"
+              className="col-span-4 border-t border-line-2 pt-3 sm:rounded-[var(--r-md)] sm:border sm:border-line sm:bg-bg/75 sm:p-4 sm:backdrop-blur-md md:col-span-6 lg:col-span-4 lg:col-start-9"
               data-hero-in
             >
               <dl className="flex items-end gap-6 sm:gap-8">
