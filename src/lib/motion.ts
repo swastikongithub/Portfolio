@@ -1,13 +1,20 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
+import { TextPlugin } from 'gsap/TextPlugin';
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import { useGSAP } from '@gsap/react';
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+gsap.registerPlugin(ScrollTrigger, ScrambleTextPlugin, TextPlugin, MotionPathPlugin, useGSAP);
 
-/** Shared motion vocabulary: everything is "set" onto the page like type on a press. */
+/**
+ * Shared motion vocabulary. Entrances ease out hard (nothing ease-in on UI);
+ * things that move across the screen ease in-out; scroll-linked motion is
+ * linear and scrubbed. Nothing loops.
+ */
 export const EASE = {
-  press: 'expo.inOut',
   out: 'expo.out',
+  move: 'expo.inOut',
   soft: 'power3.out',
 } as const;
 

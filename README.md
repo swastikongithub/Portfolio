@@ -3,37 +3,84 @@
 Personal portfolio of Swastik Singh, a Computer Science and Engineering student at Lovely Professional
 University. Live at **[portfolio-swastiksingh.vercel.app](https://portfolio-swastiksingh.vercel.app)**.
 
-The site is set like a technical journal: a masthead cover, a table of contents that doubles as navigation,
-and three case studies laid out as editorial spreads, each with a figure taken from the project's own code
-or documentation.
+The thesis is *everything works once*: each project is built around one guarantee that has to survive the
+second time something happens, and each guarantee is enforced in the database.
 
-| # | Case study | What it is | Source |
-|---|---|---|---|
-| 01 | VulnTrack | Multi-tenant vulnerability management platform (foundation phases) | [GitHub](https://github.com/swastikongithub/VulnTrack) |
-| 02 | Tenora | Multi-tenant property billing SaaS | [GitHub](https://github.com/swastikongithub/Tenora) |
-| 03 | AI Interview Platform | Role-based AI hiring platform | [GitHub](https://github.com/swastikongithub/AI-Interview-Platform) |
+| Case study | The guarantee | Source |
+|---|---|---|
+| LPU Reserve | One slot holds one booking (PostgreSQL exclusion constraints, 500 concurrent attempts → 1 booking in CI) | [GitHub](https://github.com/swastikongithub/Django-EduRev-P20) |
+| VulnTrack | An organization never loses its last owner (roster version field, NVD/OSV ingestion, matching) | [GitHub](https://github.com/swastikongithub/VulnTrack) |
+| Tenora | A webhook changes state once (unique external event id, legal-transition table) | [GitHub](https://github.com/swastikongithub/Tenora) |
+| AI Interview Platform | Nobody can make themselves an admin (RLS policy fix, BullMQ résumé pipeline) | [GitHub](https://github.com/swastikongithub/AI-Interview-Platform) |
+
+## Structure
+
+- **Home** is signal, not documentation: a live 3D run of LPU Reserve's concurrency test converging on the
+  full stop of the headline, a dive through that slot into the work explorer (one pinned section, four
+  systems), a short About and contact.
+- **Case studies** (`/projects/:slug`) are the deep layer: a scroll-driven scene of the mechanism, a
+  hands-on figure, the problem, what was built, the story, the request path, decisions, safeguards, known
+  limits and the stack. They are lazy-loaded.
 
 ## Stack
 
-- **React 19 + TypeScript + Vite**, React Router data router (`/`, `/projects/:slug`, 404)
-- **Tailwind CSS v4** with CSS-variable design tokens (light and dark themes, plus an inverted plate)
-- **GSAP + ScrollTrigger** for all choreography; **Lenis** as the single smooth-scroll engine, driven by
-  GSAP's ticker
-- No WebGL: the identity is typographic, and a canvas would not add meaning
+- **React 19 + TypeScript + Vite**, React Router data router (`/`, lazy `/projects/:slug`, 404)
+- **Tailwind CSS v4** with CSS-variable tokens (light, dark, and a fixed dark "stage")
+- **GSAP + ScrollTrigger** (plus ScrambleText, Text and MotionPath) for choreography; **Lenis** as the single
+  smooth-scroll engine, driven by GSAP's ticker
+- **Three.js** for one WebGL subsystem, the *instrument* (`src/lib/instrument/`)
+
+## The instrument (WebGL)
+
+One renderer, one canvas, one scene. The canvas is moved into whichever host is on screen (the hero or the
+work explorer) and aimed at a DOM anchor, so 3D systems can converge on a DOM element. Four modes abstract a
+real mechanism from each project: `race` (exclusion constraint as a rippling membrane), `boundary` (tenant
+volume that turns outsiders away), `dedupe` (twin events, the second refused at a unique index) and
+`pipeline` (résumé stations, re-uploads leave at the hash).
+
+- One instanced draw for all agents; positions are closed-form functions of time and a seed (deterministic)
+- Renders only while something moves; paused offscreen and in hidden tabs; disposed on unmount
+- DPR capped (1.5 on phones, 2 elsewhere); phones get a scaled-down composition
+- Three.js is a separate chunk loaded after first paint
+- `prefers-reduced-motion`: a single static frame, no pointer motion, no pinning
+- No WebGL: the explorer becomes a plain list with the same words; the hero shows the final counts
+
+## Pointer and touch (the interaction language)
+
+The pointer is one more client of the system, not a decorative cursor. One **pointer field**
+(`src/lib/interaction/pointerField.ts`) listens passively on the window, reads only event coordinates
+(coalesced events for velocity), and classifies clicks into impulses: click, double, stampede (rapid
+clicks). Clicks on links, buttons or text selections are never impulses: the control wins.
+
+| Input | Response |
+|---|---|
+| slow movement | presses a dimple into the membrane; agents nearby are pushed aside and settle back |
+| fast movement | a directional wake trails the pointer across the membrane |
+| over a control | the field goes quiet; the control leans toward the pointer (`[data-magnetic]`) |
+| near project navigation | the index anticipates the pointer (`useProximity`, `--near`) |
+| click / tap on a system | sends your own request, with a real outcome per project: refused `23P01` (LPU Reserve), `404` (VulnTrack), stored or duplicate (Tenora), queued or same file (AI Interview) |
+| double click | a sharper shockwave |
+| stampede | concurrent requests and an interference pattern; still one booking |
+| mode change | a transition wave crosses the membrane |
+
+Outcomes appear as a short label at the 3D impact point (`ImpactLabels`) and in a polite live region.
+Every number (radius, viscosity, ripple amplitude and frequency, impulse strength, smoothing, quality
+tiers) lives in `src/lib/interaction/config.ts`. Touch gets taps only (no drag capture, scrolling is
+untouched); reduced motion turns the field off; without WebGL nothing is drawn and the DOM layout stands
+on its own.
 
 ## Content
 
-All copy lives in `src/data/portfolioData.ts` (projects, toolkit, education, certifications, contact).
-The résumé is served from `public/swastik-singh-resume.pdf`; replace that file to publish a new one.
+All copy lives in `src/data/portfolioData.ts`; project facts were audited against each project's local
+source and docs, and every number names the file it comes from. The résumé is served from
+`public/swastik-singh-resume.pdf`.
 
-## Motion and accessibility
+## Accessibility
 
-- `prefers-reduced-motion: reduce` disables Lenis, scrubbed and entrance animation, and the page-turn
-  transition. Content renders in its final state.
-- Split headings keep an unsplit accessible string; links are never split.
-- Command palette (`Ctrl/⌘ K`) is an accessible combobox. The mobile Index sheet traps focus and returns
-  focus on close. `G` toggles the layout grid.
-- `index.html` contains a static cover that is shown when JavaScript is unavailable.
+Semantic headings and landmarks; every canvas is decorative with the information repeated in text (the
+explorer's legend describes what each visual shows). Split headings keep an unsplit accessible string.
+The command palette (`Ctrl/⌘ K`) is an accessible combobox, the mobile menu traps and returns focus, and
+reduced motion gets a complete, static experience.
 
 ## Develop
 

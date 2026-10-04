@@ -1,7 +1,7 @@
-export type ProjectSlug = 'vulntrack' | 'tenora' | 'ai-interview-platform';
+export type ProjectSlug = 'lpu-reserve' | 'vulntrack' | 'tenora' | 'ai-interview-platform';
 
-/** Which data figure (drawn from the project's real code/docs) a project shows. */
-export type ProjectFigure = 'permission-matrix' | 'money-flows' | 'resume-pipeline';
+/** Which interactive system figure (built from the project's real code) a project shows. */
+export type ProjectFigure = 'ledger' | 'boundary' | 'state-machine' | 'other-door';
 
 export interface Decision {
   title: string;
@@ -18,34 +18,48 @@ export interface StackGroup {
   items: string[];
 }
 
+/** A number that can be traced to a file in the project. */
+export interface Fact {
+  value: string;
+  label: string;
+  /** Where the number comes from (file, test or document). */
+  source: string;
+}
+
 export interface ProjectCaseStudy {
   slug: ProjectSlug;
-  number: string;
   title: string;
   kind: string;
   period: string;
   status: string;
-  /** One-sentence standfirst, shown under the title. */
+  /** The sentence the system is built to keep true. */
+  invariant: string;
+  /** How it is enforced, in the project's own terms (shown in mono). */
+  mechanism: string;
+  /** What "happens twice" in this system: the situation the invariant survives. */
+  twice: string;
+  /** One-sentence standfirst under the title. */
   deck: string;
-  /** Short summary for the command palette, contents and metadata. */
+  /** Short summary for the command palette and metadata. */
   summary: string;
   problem: string;
-  /** The 3–4 strongest pieces of work, shown on the home page spread. */
+  /** The strongest pieces of work, shown on the home chapter. */
   built: string[];
-  /** The one decision featured on the home page. */
-  keyDecision: Decision;
+  /** The one story worth telling in full. */
+  story: Decision;
   architecture: { intro: string; layers: ArchitectureLayer[] };
   decisions: Decision[];
   safeguards: string[];
   /** What is deliberately not built yet, or known gaps. */
-  scope: string[];
+  limits: string[];
+  facts: Fact[];
+  /** Index into `facts` of the one number shown on the home page. */
+  homeFact: number;
   stack: StackGroup[];
   stackShort: string[];
   links: { source: string; live?: string; liveNote?: string };
   figure: ProjectFigure;
   figureCaption: string;
-  /** Spread composition on the home page, varied so the three don't repeat. */
-  layout: 'figure-right' | 'figure-left' | 'figure-wide';
 }
 
 export interface EducationEntry {
@@ -63,19 +77,35 @@ export interface Credential {
   note?: string;
 }
 
-export interface ToolEntry {
-  name: string;
-  /** Case-study numbers the tool was used in; empty = from CV/coursework. */
-  usedIn: string[];
-}
-
-export interface ToolGroup {
-  discipline: string;
-  tools: ToolEntry[];
-}
-
 export interface SectionLink {
   id: string;
-  number: string;
   label: string;
+}
+
+export interface Habit {
+  title: string;
+  /** A real file or practice that shows it. */
+  evidence: string;
+}
+
+/** One repository's commits on its main branch, per day (from `git log`). */
+export interface RepoHistory {
+  slug: ProjectSlug;
+  /** ISO date → commits that day. */
+  days: Record<string, number>;
+  /** Commit subjects worth reading, verbatim, keyed by the day they landed. */
+  milestones: { date: string; message: string }[];
+  /** Context a reader needs to read the lane honestly. */
+  note?: string;
+}
+
+/** "The second time" scene for one project: the duplicate, and what the system does with each copy. */
+export interface SecondTime {
+  slug: ProjectSlug;
+  /** What happens twice, as a sentence. */
+  event: string;
+  /** The guard both copies hit, in the project's own terms (short, mono). */
+  gate: string;
+  first: { label: string; outcome: string; passes: boolean };
+  second: { label: string; outcome: string };
 }

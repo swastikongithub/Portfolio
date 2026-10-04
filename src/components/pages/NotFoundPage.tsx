@@ -1,37 +1,41 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { PROJECTS } from '../../data/portfolioData';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { TransitionLink } from '../ui/TransitionLink';
-import { Footer } from '../layout/Footer';
+import { SiteFooter } from '../layout/SiteFooter';
 
 export const NotFoundPage: React.FC = () => {
   useDocumentTitle('Page not found');
+  const { pathname } = useLocation();
 
   return (
     <>
-      <main id="main" tabIndex={-1} className="frame min-h-[80svh] pt-[calc(var(--header-h)+10vh)] pb-24 outline-none">
-        <p className="t-label text-accent-text">Error 404</p>
-        <h1 tabIndex={-1} className="t-title mt-4 outline-none">
-          Not in
-          <br />
-          this edition.
+      <main id="main" tabIndex={-1} className="frame min-h-[80svh] pb-16 pt-[calc(var(--header-h)+8vh)] outline-none">
+        <p className="t-mono text-ink-2">
+          GET {pathname} <span className="rounded-[2px] bg-ink px-1 text-bg">404</span>
+        </p>
+        <h1 tabIndex={-1} className="t-display mt-4 outline-none">
+          Not 403. 404.
         </h1>
-        <p className="t-deck mt-8 max-w-[30ch]">The page you asked for doesn’t exist. The work does:</p>
-        <ul className="mt-8 border-t border-rule max-w-2xl">
+        <p className="t-lead mt-6 max-w-[44ch] text-ink-2">
+          This page doesn&rsquo;t exist, and I&rsquo;m not hiding it from you. These four do:
+        </p>
+        <ul className="mt-8 max-w-3xl border-t border-line-2">
           {PROJECTS.map((p) => (
-            <li key={p.slug} className="border-b border-rule">
-              <TransitionLink to={`/projects/${p.slug}`} curtainLabel={p.title} className="flex items-baseline gap-4 py-4 hover:text-accent-text">
-                <span className="t-label text-accent-text">{p.number}</span>
-                <span className="t-head">{p.title}</span>
+            <li key={p.slug} className="border-b border-line-2">
+              <TransitionLink to={`/projects/${p.slug}`} className="group flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
+                <span className="t-h3 transition-colors group-hover:text-ink-2">{p.title}</span>
+                <span className="t-small text-ink-2">{p.invariant}</span>
               </TransitionLink>
             </li>
           ))}
         </ul>
-        <TransitionLink to="/" curtainLabel="Index" className="btn btn-solid mt-10">
-          <span aria-hidden="true">←</span> Back to the index
+        <TransitionLink to="/" className="btn btn-ink mt-10">
+          Back to the start
         </TransitionLink>
       </main>
-      <Footer />
+      <SiteFooter />
     </>
   );
 };

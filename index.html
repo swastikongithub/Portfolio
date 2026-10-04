@@ -3,24 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Swastik Singh — Software Engineer</title>
+    <title>Swastik Singh, software engineer</title>
     <meta
       name="description"
-      content="Swastik Singh — Computer Science and Engineering student building backend-heavy systems: VulnTrack, Tenora and an AI Interview Platform, written up as engineering case studies."
+      content="Swastik Singh builds backends for the second time something happens: LPU Reserve, VulnTrack, Tenora and an AI Interview Platform, each built around one guarantee the database enforces."
     />
     <link rel="canonical" href="https://portfolio-swastiksingh.vercel.app/" />
     <meta name="author" content="Swastik Singh" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Swastik Singh" />
-    <meta property="og:title" content="Swastik Singh — Software Engineer" />
+    <meta property="og:title" content="Swastik Singh: everything works once" />
     <meta
       property="og:description"
-      content="Case studies in tenant isolation, session security, idempotent webhooks and background processing."
+      content="Four systems, four sentences that must stay true: one booking per slot, an owner per organization, one state change per webhook, no self-made admins."
     />
     <meta property="og:url" content="https://portfolio-swastiksingh.vercel.app/" />
     <meta name="twitter:card" content="summary" />
-    <meta name="theme-color" content="#F2F0EB" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0C0C0B" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#e4e6e9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d0f12" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <script>
@@ -41,20 +41,20 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Martian+Mono:wdth,wght@75..112.5,300..700&family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..700&display=swap"
       rel="stylesheet"
     />
 
     <style>
-      /* Static first frame: visible without JavaScript, replaced when the app mounts. */
-      .boot { min-height: 100svh; padding: 88px clamp(16px, 3vw, 40px) 40px; box-sizing: border-box;
-        display: flex; flex-direction: column; justify-content: space-between; gap: 32px;
-        background: #F2F0EB; color: #101010; font-family: Archivo, system-ui, sans-serif; }
-      .dark .boot { background: #0C0C0B; color: #ECEAE4; }
-      .boot h1 { margin: 0; font-size: clamp(4rem, 19vw, 21rem); line-height: .82; font-weight: 800;
-        font-stretch: 72%; letter-spacing: -.04em; text-transform: uppercase; }
-      .boot p { max-width: 36ch; font-size: 1.25rem; line-height: 1.4; margin: 0 0 16px; }
-      .boot a { color: inherit; margin-right: 20px; font-size: .95rem; }
+      /* Static first frame: complete without JavaScript, replaced when the app mounts. */
+      .boot { min-height: 100svh; box-sizing: border-box; padding: 96px clamp(16px, 3.2vw, 48px) 48px;
+        display: flex; flex-direction: column; justify-content: space-between; gap: 40px;
+        background: #e4e6e9; color: #0e1115; font-family: 'Schibsted Grotesk', system-ui, sans-serif; }
+      .dark .boot { background: #0d0f12; color: #e7e9ec; }
+      .boot small { font-size: 1rem; }
+      .boot h1 { margin: 12px 0 0; font-size: clamp(3.4rem, 10.4vw, 11.5rem); line-height: .88; font-weight: 800; letter-spacing: -.045em; }
+      .boot p { max-width: 40ch; font-size: 1.2rem; line-height: 1.45; margin: 0 0 18px; }
+      .boot a { color: inherit; margin-right: 18px; }
       .js .boot { visibility: hidden; animation: boot-reveal 0s 3s forwards; }
       @keyframes boot-reveal { to { visibility: visible; } }
     </style>
@@ -62,13 +62,17 @@
   <body>
     <div id="root">
       <main class="boot">
-        <h1>Swastik<br />Singh</h1>
         <div>
-          <p>Software engineer and Computer Science student. I build the parts of software that have to be right.</p>
+          <small>Swastik Singh, software engineer</small>
+          <h1>Everything works once.</h1>
+        </div>
+        <div>
+          <p>I build backends for the second time: the double click, the duplicate webhook, two people at the same instant.</p>
           <p>
-            <a href="/projects/vulntrack">01 VulnTrack</a>
-            <a href="/projects/tenora">02 Tenora</a>
-            <a href="/projects/ai-interview-platform">03 AI Interview Platform</a>
+            <a href="/projects/lpu-reserve">LPU Reserve</a>
+            <a href="/projects/vulntrack">VulnTrack</a>
+            <a href="/projects/tenora">Tenora</a>
+            <a href="/projects/ai-interview-platform">AI Interview Platform</a>
           </p>
           <p>
             <a href="mailto:swastiksingh288@gmail.com">swastiksingh288@gmail.com</a>

@@ -1,115 +1,174 @@
 @import "tailwindcss";
 
-/* Theme is class-driven (.dark on <html>), set before paint by index.html. */
+/* Theme is class-driven (.dark on <html>), resolved before first paint by index.html. */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: 'Archivo', ui-sans-serif, system-ui, sans-serif;
-  --font-serif: 'Instrument Serif', ui-serif, Georgia, serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-sans: 'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Martian Mono', ui-monospace, 'SFMono-Regular', monospace;
 
-  --ease-press: cubic-bezier(0.77, 0, 0.18, 1);
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Motion curves (Emil Kowalski's strong ease-out / in-out, plus a drawer curve). */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-/* `inline` makes utilities reference the live tokens, so scoped overrides (.dark, .inverse) apply. */
+/* `inline` makes utilities reference the live tokens, so .dark overrides apply. */
 @theme inline {
-  --color-paper: var(--paper);
-  --color-paper-2: var(--paper-2);
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-sunk: var(--sunk);
   --color-ink: var(--ink);
-  --color-muted: var(--muted);
-  --color-rule: var(--rule);
-  --color-accent: var(--accent);
-  --color-accent-text: var(--accent-text);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-signal: var(--signal);
+  --color-on-signal: var(--on-signal);
+  --color-signal-text: var(--signal-text);
 }
 
-/* ── Tokens ─────────────────────────────────────────────────────────────── */
+/*
+ * ── Tokens ──────────────────────────────────────────────────────────────────
+ * Fog and ink, with one signal colour. Signal means "the one that got
+ * through": the winning attempt, the granted permission, the legal transition.
+ * Everything that was refused stays in the greys.
+ */
 :root {
-  --paper: #f2f0eb;
-  --paper-2: #e8e5de;
-  --ink: #101010;
-  --muted: #595751;
-  --rule: rgb(16 16 16 / 0.16);
-  /* Fills and large type only; small text uses --accent-text for contrast. */
-  --accent: #ff4d2d;
-  --accent-text: #c2321a;
-  --gutter: clamp(16px, 3vw, 40px);
-  --frame: 1640px;
+  --bg: #e4e6e9;
+  --bg-2: #eef0f2;
+  --sunk: #d6d9de;
+  --ink: #0e1115;
+  --ink-2: #444b55;
+  --ink-3: #6b7380;
+  --line: rgb(14 17 21 / 0.13);
+  --line-2: rgb(14 17 21 / 0.3);
+  --signal: #ffc21a;
+  --on-signal: #0e1115;
+  /* Signal as text on fog needs a darker shade for contrast (AA at small sizes). */
+  --signal-text: #7a5200;
+  --hatch: rgb(14 17 21 / 0.22);
+
+  --gutter: clamp(16px, 3.2vw, 48px);
+  --frame: 1560px;
   --header-h: 64px;
+
+  /* Radius grows with size; anything you press is a pill. */
+  --r-xs: 3px;
+  --r-sm: 6px;
+  --r-md: 12px;
+  --r-lg: 20px;
+
   color-scheme: light;
 }
 
 .dark {
-  --paper: #0c0c0b;
-  --paper-2: #171716;
-  --ink: #eceae4;
-  --muted: #a09d95;
-  --rule: rgb(236 234 228 / 0.16);
-  --accent: #ff5a3a;
-  --accent-text: #ff6f52;
+  --bg: #0d0f12;
+  --bg-2: #15181c;
+  --sunk: #08090b;
+  --ink: #e7e9ec;
+  --ink-2: #a5adb8;
+  --ink-3: #737b87;
+  --line: rgb(231 233 236 / 0.11);
+  --line-2: rgb(231 233 236 / 0.26);
+  --signal: #ffc21a;
+  --on-signal: #0e1115;
+  --signal-text: #ffc21a;
+  --hatch: rgb(231 233 236 / 0.2);
   color-scheme: dark;
 }
 
-/* An inverted plate (contact, footer): swaps tokens so every component still works inside it. */
-.inverse {
-  --paper: #101010;
-  --paper-2: #1b1b1a;
-  --ink: #f2f0eb;
-  --muted: #a9a69e;
-  --rule: rgb(242 240 235 / 0.18);
-  --accent-text: #ff6f52;
-  background: var(--paper);
+/*
+ * The stage: "inside the system". The dive out of the hero lands here, and the
+ * four systems live on it. It keeps the same tokens with a darker, fixed palette,
+ * so every component works inside it in either theme.
+ */
+.stage,
+html[data-on-stage] [data-site-header],
+html[data-on-stage] [data-trace] {
+  --bg: #0a0c0f;
+  --bg-2: #13161b;
+  --sunk: #050608;
+  --ink: #eceef1;
+  --ink-2: #a7afba;
+  --ink-3: #6f7783;
+  --line: rgb(236 238 241 / 0.1);
+  --line-2: rgb(236 238 241 / 0.24);
+  --signal-text: #ffc21a;
+  --hatch: rgb(236 238 241 / 0.2);
   color: var(--ink);
+  color-scheme: dark;
 }
-.dark .inverse {
-  --paper: #eceae4;
-  --paper-2: #dedbd3;
-  --ink: #0c0c0b;
-  --muted: #56544e;
-  --rule: rgb(12 12 11 / 0.18);
-  --accent-text: #b52e17;
+.stage {
+  background: var(--bg);
+}
+/* Programmatic focus targets (headings with tabindex=-1) never show the keyboard ring. */
+[tabindex='-1']:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 /* ── Base ───────────────────────────────────────────────────────────────── */
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
-    text-rendering: optimizeLegibility;
+    text-size-adjust: 100%;
+    background: var(--bg);
   }
 
   body {
     margin: 0;
-    background: var(--paper);
+    background: var(--bg);
     color: var(--ink);
     font-family: var(--font-sans);
     font-size: 1.0625rem;
     line-height: 1.6;
+    font-feature-settings: 'ss01', 'tnum' 0;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: clip;
   }
 
   ::selection {
-    background: var(--accent);
-    color: #101010;
+    background: var(--signal);
+    color: var(--on-signal);
   }
 
   :focus-visible {
-    outline: 2px solid var(--accent);
+    outline: 2px solid var(--ink);
     outline-offset: 3px;
+    box-shadow: 0 0 0 5px var(--signal);
+    border-radius: 2px;
   }
 
   [id] {
-    scroll-margin-top: calc(var(--header-h) + 8px);
+    scroll-margin-top: calc(var(--header-h) + 12px);
   }
 
-  img {
-    max-width: 100%;
+  img,
+  svg,
+  canvas {
     display: block;
+    max-width: 100%;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 }
 
-/* Lenis (smooth scroll) — required rules */
+/* Lenis (smooth scroll): required rules */
 html.lenis,
 html.lenis body {
   height: auto;
@@ -124,25 +183,8 @@ html.lenis body {
   overflow: clip;
 }
 
-/* ── Paper texture (static, cheap) ──────────────────────────────────────── */
-.grain::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  opacity: 0.35;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-.dark .grain::before {
-  mix-blend-mode: screen;
-  opacity: 0.18;
-  filter: invert(1);
-}
-
-/* ── Layout primitives ──────────────────────────────────────────────────── */
 @layer components {
+  /* ── Layout ── */
   .frame {
     width: 100%;
     max-width: var(--frame);
@@ -155,7 +197,6 @@ html.lenis body {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     column-gap: 16px;
   }
-  /* Let wide children (tables, long words) scroll inside their cell instead of widening the page. */
   .grid-12 > * {
     min-width: 0;
   }
@@ -166,257 +207,483 @@ html.lenis body {
     }
   }
 
-  .hairline {
-    border-color: var(--rule);
-  }
-
-  /* ── Type scale ── */
-  .t-mega {
-    font-family: var(--font-sans);
-    font-weight: 820;
-    font-stretch: 70%;
-    /* Bound by height as well, so the thesis and CTA stay in the first viewport. */
-    font-size: clamp(4.25rem, min(19.5vw, 27svh), 22rem);
-    line-height: 0.8;
+  /* ── Type ── */
+  .t-hero {
+    font-weight: 800;
+    font-size: clamp(3.4rem, min(11.5vw, 17svh), 11.5rem);
+    line-height: 0.88;
     letter-spacing: -0.045em;
-    text-transform: uppercase;
+  }
+  @media (min-width: 768px) {
+    .t-hero-xl {
+      font-size: clamp(3.6rem, min(15.2vw, 24svh), 17rem);
+    }
+  }
+  @media (min-width: 1024px) {
+    .t-hero {
+      font-size: clamp(4rem, min(8.4vw, 19svh), 10.5rem);
+    }
+  }
+  .t-hero-xl {
+    font-weight: 800;
+    font-size: clamp(3.2rem, min(17.4vw, 22svh), 17rem);
+    line-height: 0.86;
+    letter-spacing: -0.052em;
   }
   .t-display {
-    font-weight: 780;
-    font-stretch: 74%;
-    font-size: clamp(2.9rem, 8.2vw, 8.75rem);
-    line-height: 0.86;
-    letter-spacing: -0.035em;
-    text-transform: uppercase;
-  }
-  .t-title {
     font-weight: 800;
-    font-stretch: 70%;
-    font-size: clamp(3.25rem, 10.5vw, 11.5rem);
-    line-height: 0.82;
-    letter-spacing: -0.04em;
-    text-transform: uppercase;
+    font-size: clamp(3rem, 8.4vw, 9.25rem);
+    line-height: 0.88;
+    letter-spacing: -0.042em;
   }
-  .t-head {
-    font-weight: 720;
-    font-stretch: 82%;
-    font-size: clamp(1.6rem, 2.6vw, 2.5rem);
-    line-height: 1;
-    letter-spacing: -0.02em;
+  .t-h2 {
+    font-weight: 750;
+    font-size: clamp(2rem, 4.4vw, 4.25rem);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
   }
-  .t-deck {
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: clamp(1.45rem, 2.35vw, 2.3rem);
-    line-height: 1.12;
-    letter-spacing: -0.005em;
+  .t-h3 {
+    font-weight: 680;
+    font-size: clamp(1.3rem, 1.9vw, 1.7rem);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
   }
-  .t-serif {
-    font-family: var(--font-serif);
-    font-weight: 400;
+  .t-lead {
+    font-size: clamp(1.15rem, 1.55vw, 1.45rem);
+    line-height: 1.42;
+    letter-spacing: -0.008em;
   }
   .t-body {
-    font-size: clamp(1rem, 1.05vw, 1.125rem);
-    line-height: 1.62;
+    font-size: 1.0625rem;
+    line-height: 1.6;
   }
-  .t-label {
+  .t-small {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+  /* Mono is for data: identifiers, SQL, states, numbers. Sentence case, never tracked caps. */
+  .t-mono {
     font-family: var(--font-mono);
-    font-size: 0.72rem;
-    line-height: 1.4;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    font-size: 0.75rem;
+    line-height: 1.6;
+    font-variation-settings: 'wdth' 87.5;
+    letter-spacing: -0.01em;
   }
-  .t-numeral {
-    font-weight: 800;
-    font-stretch: 62%;
-    line-height: 0.78;
-    letter-spacing: -0.05em;
-    color: transparent;
-    -webkit-text-stroke: 1.5px var(--ink);
+  .t-mono-lg {
+    font-family: var(--font-mono);
+    font-variation-settings: 'wdth' 87.5;
+    letter-spacing: -0.03em;
+  }
+  .t-num {
+    font-variant-numeric: tabular-nums;
   }
 
-  /* ── Interactive primitives ── */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    min-height: 48px;
-    padding: 0.85rem 1.35rem;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    border: 1px solid var(--ink);
-    position: relative;
-    isolation: isolate;
+  /* ── Masked line reveal (see useReveal) ── */
+  .line-mask {
+    display: block;
     overflow: hidden;
-    transition: color 0.35s var(--ease-press), border-color 0.35s var(--ease-press);
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
   }
-  .btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: var(--accent);
-    transform: scaleY(0);
-    transform-origin: bottom;
-    transition: transform 0.45s var(--ease-press);
+  .line-mask > .line {
+    display: block;
   }
-  .btn:hover::before,
-  .btn:focus-visible::before {
-    transform: scaleY(1);
-  }
-  .btn:hover,
-  .btn:focus-visible {
-    color: #101010;
-    border-color: var(--accent);
-  }
-  .btn:active {
-    transform: translateY(1px);
-  }
-  .btn-solid {
-    background: var(--ink);
-    color: var(--paper);
-  }
-
-  .link-u {
-    background-image: linear-gradient(currentColor, currentColor);
-    background-size: 0% 1px;
-    background-position: 0 100%;
-    background-repeat: no-repeat;
-    transition: background-size 0.4s var(--ease-press), color 0.2s;
-  }
-  .link-u:hover,
-  .link-u:focus-visible {
-    background-size: 100% 1px;
-  }
-
-  .arrow {
-    display: inline-block;
-    transition: transform 0.4s var(--ease-press);
-  }
-  a:hover > .arrow,
-  a:focus-visible > .arrow,
-  button:hover > .arrow {
-    transform: translate(3px, -3px);
-  }
-  a:hover > .arrow-r,
-  a:focus-visible > .arrow-r {
-    transform: translateX(5px);
-  }
-
-  /* Split-word masks: the padding keeps descenders from being clipped. */
   .word-mask {
     display: inline-block;
     overflow: hidden;
     vertical-align: top;
-    padding-bottom: 0.08em;
-    margin-bottom: -0.08em;
+    padding-bottom: 0.1em;
+    margin-bottom: -0.1em;
   }
-  .word {
+  .word-mask > .word {
     display: inline-block;
-    will-change: transform;
   }
 
-  /* Print registration marks on the cover frame */
-  .reg {
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    pointer-events: none;
+  /* ── Buttons & links ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55em;
+    min-height: 48px;
+    padding: 0 1.35rem;
+    border-radius: 999px;
+    border: 1px solid var(--line-2);
+    font-weight: 600;
+    font-size: 0.98rem;
+    white-space: nowrap;
+    color: var(--ink);
+    background: transparent;
+    transition:
+      background-color 220ms var(--ease-out),
+      color 220ms var(--ease-out),
+      border-color 220ms var(--ease-out),
+      transform 140ms var(--ease-out);
   }
-  .reg::before,
-  .reg::after {
-    content: '';
-    position: absolute;
+  .btn:active {
+    transform: scale(0.97);
+  }
+  .btn-signal {
+    background: var(--signal);
+    border-color: var(--signal);
+    color: var(--on-signal);
+  }
+  .btn-ink {
     background: var(--ink);
+    border-color: var(--ink);
+    color: var(--bg);
   }
-  .reg::before {
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 1px;
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover {
+      border-color: var(--ink);
+    }
+    .btn-signal:hover {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--bg);
+    }
+    .btn-ink:hover {
+      background: var(--signal);
+      border-color: var(--signal);
+      color: var(--on-signal);
+    }
   }
-  .reg::after {
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 1px;
+  /* Project navigation anticipates the pointer (--near is set by useProximity). */
+  .near-aware {
+    --near: 0;
+    border-color: color-mix(in srgb, var(--signal) calc(var(--near) * 70%), var(--line-2));
+    box-shadow: 0 0 calc(var(--near) * 22px) calc(var(--near) * -4px) var(--signal);
+  }
+  .btn-sm {
+    min-height: 40px;
+    padding: 0 1rem;
+    font-size: 0.9rem;
+  }
+
+  .link {
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+    text-decoration-color: var(--line-2);
+    transition: text-decoration-color 200ms var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .link:hover {
+      text-decoration-color: var(--ink);
+    }
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--r-xs);
+    border: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-variation-settings: 'wdth' 87.5;
+    font-size: 0.72rem;
+    line-height: 1.5;
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  /* Large statements on light pages: ink type over a signal highlighter. */
+  .mark {
+    background-image: linear-gradient(transparent 64%, var(--signal) 64%, var(--signal) 92%, transparent 92%);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    padding-inline: 0.04em;
+  }
+  .stage .mark {
+    background-image: none;
+    color: var(--signal);
+    padding-inline: 0;
+  }
+
+  .panel {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+  }
+
+  /* Diagonal hatch: a state that must read without colour (timetabled class). */
+  .hatch {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      var(--hatch) 0 1.5px,
+      transparent 1.5px 7px
+    );
+  }
+  /* Wide stripes: maintenance. */
+  .stripes {
+    background-image: repeating-linear-gradient(
+      90deg,
+      var(--hatch) 0 3px,
+      transparent 3px 9px
+    );
+  }
+
+  .skip-link {
+    position: fixed;
+    left: 12px;
+    top: -60px;
+    z-index: 100;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--bg);
+    font-weight: 600;
+    transition: top 200ms var(--ease-out);
+  }
+  .skip-link:focus {
+    top: 12px;
   }
 }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+/* Impact labels rise a little and fade, over the ripple's lifetime. */
+.impact-label {
+  transform: translate(-50%, -140%);
+  animation: impact-label linear forwards;
+}
+@keyframes impact-label {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -100%);
+  }
+  12% {
+    opacity: 1;
+    transform: translate(-50%, -150%);
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -210%);
+  }
 }
 
-.skip-link {
-  position: fixed;
-  left: 12px;
-  top: 12px;
-  z-index: 200;
-  padding: 10px 16px;
-  background: var(--ink);
-  color: var(--paper);
-  transform: translateY(-160%);
-}
-.skip-link:focus-visible {
-  transform: none;
-}
-
-/* Header hides on scroll down, returns on scroll up (JS toggles the class). */
-.site-header {
-  transition: transform 0.5s var(--ease-press), background-color 0.3s, border-color 0.3s;
-}
-.site-header.is-hidden {
-  transform: translateY(-101%);
-}
-.site-header.is-hidden:focus-within {
-  transform: none;
-}
-
-/* Theme change: page-turn wipe via View Transitions where supported. */
+/* The theme switch wipes in from the toggle (View Transitions where supported). */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
 }
 ::view-transition-new(root) {
-  animation: theme-wipe 0.7s var(--ease-press);
+  animation: theme-wipe 560ms var(--ease-in-out);
 }
 @keyframes theme-wipe {
   from {
-    clip-path: inset(0 0 100% 0);
+    clip-path: circle(0% at var(--wipe-x, 100%) var(--wipe-y, 0%));
   }
   to {
-    clip-path: inset(0 0 0 0);
+    clip-path: circle(150% at var(--wipe-x, 100%) var(--wipe-y, 0%));
   }
 }
-/* Fallback for browsers without View Transitions */
 .theme-anim,
-.theme-anim *,
-.theme-anim *::before,
-.theme-anim *::after {
-  transition: background-color 0.45s ease, color 0.45s ease, border-color 0.45s ease !important;
+.theme-anim * {
+  transition:
+    background-color 300ms var(--ease-out),
+    color 300ms var(--ease-out),
+    border-color 300ms var(--ease-out) !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation-duration: 0.001ms !important;
+    animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-  ::view-transition-new(root) {
-    animation: none;
+  .btn,
+  .link {
+    transition: none;
   }
+}
+
+/*
+ * The cursor (see Cursor.tsx). Active only with html.has-cursor (a fine
+ * pointer with motion allowed); text fields keep the native cursor.
+ */
+html.has-cursor,
+html.has-cursor * {
+  cursor: none !important;
+}
+html.has-cursor input,
+html.has-cursor textarea,
+html.has-cursor select,
+html.has-cursor [contenteditable='true'] {
+  cursor: auto !important;
+}
+.cursor-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 140;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms var(--ease-out);
+}
+.cursor-layer[data-visible='true'] {
+  opacity: 1;
+}
+.cursor-layer[data-mode='hidden'] {
+  opacity: 0;
+}
+.cursor-dot {
+  position: fixed;
+  left: -3px;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #fff;
+  mix-blend-mode: difference;
+  transition: opacity 160ms var(--ease-out);
+}
+.cursor-layer[data-mode='lock'] .cursor-dot,
+.cursor-layer[data-mode='text'] .cursor-dot {
+  opacity: 0;
+}
+.cursor-ring {
+  position: fixed;
+  left: 0;
+  top: 0;
+  border-radius: 999px;
+  border: 1.5px solid #fff;
+  mix-blend-mode: difference;
+  transform-origin: center;
+  transition:
+    border-radius 260ms var(--ease-out),
+    border-color 200ms var(--ease-out),
+    background-color 160ms var(--ease-out);
+}
+.cursor-layer[data-pressed='true'] .cursor-ring {
+  background-color: rgb(255 255 255 / 0.3);
+}
+/* Text: an I-beam. */
+.cursor-layer[data-mode='text'] .cursor-ring {
+  border-radius: 2px;
+  border-width: 0;
+  background-color: #fff;
+}
+/* Locked onto a control: the ring becomes four signal brackets. */
+.cursor-layer[data-mode='lock'] .cursor-ring {
+  border-color: transparent;
+  border-radius: 4px;
+  mix-blend-mode: normal;
+}
+.cursor-layer[data-mode='lock'][data-pressed='true'] .cursor-ring {
+  background-color: color-mix(in srgb, var(--signal) 18%, transparent);
+}
+.cursor-ring > i {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 0 solid var(--signal);
+  opacity: 0;
+  transition: opacity 180ms var(--ease-out);
+}
+.cursor-layer[data-mode='lock'] .cursor-ring > i {
+  opacity: 1;
+}
+.cursor-ring > i:nth-child(1) {
+  left: -2px;
+  top: -2px;
+  border-left-width: 2px;
+  border-top-width: 2px;
+}
+.cursor-ring > i:nth-child(2) {
+  right: -2px;
+  top: -2px;
+  border-right-width: 2px;
+  border-top-width: 2px;
+}
+.cursor-ring > i:nth-child(3) {
+  left: -2px;
+  bottom: -2px;
+  border-left-width: 2px;
+  border-bottom-width: 2px;
+}
+.cursor-ring > i:nth-child(4) {
+  right: -2px;
+  bottom: -2px;
+  border-right-width: 2px;
+  border-bottom-width: 2px;
+}
+/* Over a live system: a crosshair, and the label says what a click sends. */
+.cursor-layer[data-mode='system'] .cursor-ring {
+  border-color: var(--signal);
+  mix-blend-mode: normal;
+  background:
+    linear-gradient(var(--signal), var(--signal)) center / 1px 46% no-repeat,
+    linear-gradient(var(--signal), var(--signal)) center / 46% 1px no-repeat;
+}
+.cursor-label {
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding: 3px 7px;
+  border-radius: 3px;
+  background: var(--signal);
+  color: var(--on-signal);
+  font-size: 11px;
+  line-height: 1.3;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 160ms var(--ease-out);
+}
+.cursor-layer[data-mode='system'] .cursor-label:not(:empty),
+.cursor-layer[data-mode='lock'] .cursor-label:not(:empty) {
+  opacity: 1;
+}
+.cursor-burst {
+  position: fixed;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border-radius: 999px;
+  border: 1.5px solid var(--signal);
+}
+
+/* The record (History.tsx): day width and playhead position for the git graph. */
+#record {
+  --day: clamp(44px, 5.2vw, 84px);
+  --ph: 56vw;
+}
+@media (max-width: 640px) {
+  #record {
+    --ph: 42vw;
+  }
+}
+.history-node {
+  font-size: 10px;
+  color: var(--ink-3);
+  border: 1.5px solid var(--line-2);
+  background: var(--bg);
+  transform: translate(-50%, -50%) scale(0.72);
+  transition:
+    transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 240ms var(--ease-out),
+    color 240ms var(--ease-out),
+    border-color 240ms var(--ease-out);
+}
+.history-node[data-lit] {
+  color: var(--on-signal);
+  border-color: var(--signal);
+  background: var(--signal);
+  transform: translate(-50%, -50%) scale(1);
+}
+.history-log {
+  transition: opacity 300ms var(--ease-out);
+}
+.history-log:not([data-shown]) {
+  display: none;
+}
+
+/* "Everything happens twice": the refused copy is struck through line by line. */
+.ghost-strike {
+  background: linear-gradient(currentColor, currentColor) no-repeat 0 58% / 0% 0.07em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }

@@ -18,7 +18,7 @@ function applyTheme(theme: Theme) {
   try {
     localStorage.setItem(STORAGE_KEY, theme);
   } catch {
-    /* storage unavailable (private mode) — the choice just won't persist */
+    /* storage unavailable (private mode): the choice just won't persist */
   }
 }
 
@@ -29,7 +29,7 @@ type ViewTransitionDocument = Document & {
 export function useTheme() {
   const [theme, setTheme] = useState<Theme>(readTheme);
 
-  const toggleTheme = useCallback(() => {
+  const toggleTheme = useCallback((origin?: { x: number; y: number }) => {
     const next: Theme = readTheme() === 'dark' ? 'light' : 'dark';
     const commit = () => {
       applyTheme(next);
@@ -43,7 +43,10 @@ export function useTheme() {
 
     const doc = document as ViewTransitionDocument;
     if (typeof doc.startViewTransition === 'function') {
-      // Page-turn wipe (see ::view-transition-new in index.css).
+      // Circular wipe from the control that was pressed (see ::view-transition-new in index.css).
+      const root = document.documentElement;
+      root.style.setProperty('--wipe-x', origin ? `${origin.x}px` : '100%');
+      root.style.setProperty('--wipe-y', origin ? `${origin.y}px` : '0%');
       doc.startViewTransition(commit);
       return;
     }
