@@ -43,7 +43,7 @@ const EXTRA_TITLE: Record<ProjectSlug, string> = {
   'lpu-reserve': 'One ledger for every claim',
   vulntrack: 'Four answers, never a silent guess',
   tenora: 'Two money flows that never import each other',
-  'ai-interview-platform': 'The résumé never sits in a request',
+  'ai-interview-platform': 'The resume never sits in a request',
 };
 
 const STORY_CODE: Partial<Record<ProjectSlug, string>> = {

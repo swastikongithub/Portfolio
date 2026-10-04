@@ -14,7 +14,7 @@ import type {
  * Project facts were audited against each project's local source code and
  * documentation on 3-4 Oct 2026 (local implementation wins over README, CV or
  * older copy). Education, training and certifications come from the CV dated
- * 18 Sep 2026, which is also the published résumé.
+ * 18 Sep 2026, which is also the published resume.
  */
 export const PERSONAL_INFO = {
   name: 'Swastik Singh',
@@ -311,14 +311,14 @@ export const PROJECTS: ProjectCaseStudy[] = [
     invariant: 'Nobody can make themselves an admin.',
     mechanism: 'DROP POLICY "Users can update own row" ON public.users;',
     twice: 'One request through the API, another straight to the database.',
-    deck: 'A four-role hiring platform where résumé analysis runs as a background job, AI output is validated like any untrusted input, and Postgres row-level security is the last line of authorization.',
+    deck: 'A four-role hiring platform where resume analysis runs as a background job, AI output is validated like any untrusted input, and Postgres row-level security is the last line of authorization.',
     summary:
-      'A TypeScript monorepo with a BullMQ résumé pipeline, schema-constrained Gemini output, and row-level security on the Supabase schema.',
+      'A TypeScript monorepo with a BullMQ resume pipeline, schema-constrained Gemini output, and row-level security on the Supabase schema.',
     problem:
       'Hiring data has many readers: candidates may only see their own records, interviewers only what they are assigned. And a Supabase project has two doors, the backend API and the database\'s own REST interface, so every rule has to hold at both. AI calls are slow and fallible: they cannot sit in a request path, and their output cannot be trusted to be well-formed.',
     built: [
       'Four roles (candidate, recruiter, interviewer, admin) in a TypeScript monorepo: an Express REST API with Supabase Auth JWTs, Zod validation and rate limiting, plus role-guarded React routes.',
-      'A résumé pipeline on BullMQ and Redis: uploads are hashed, and job IDs are derived from the user and the file hash, so the same file is never processed twice.',
+      'A resume pipeline on BullMQ and Redis: uploads are hashed, and job IDs are derived from the user and the file hash, so the same file is never processed twice.',
       'Gemini returns schema-constrained JSON (profile, ATS score, keyword gaps) that is validated again with Zod before it touches the database.',
       'An interview domain whose start logic locks the row and validates the state transition inside Postgres.',
     ],
@@ -339,7 +339,7 @@ export const PROJECTS: ProjectCaseStudy[] = [
     decisions: [
       {
         title: 'Job IDs scoped to the user',
-        body: 'Deterministic job IDs make re-uploads idempotent. But two people uploading the same template résumé would collide onto one job and strand one profile in "processing". IDs are resume-{user}-{hash}.',
+        body: 'Deterministic job IDs make re-uploads idempotent. But two people uploading the same template resume would collide onto one job and strand one profile in "processing". IDs are resume-{user}-{hash}.',
       },
       {
         title: 'AI output is untrusted input',
@@ -357,10 +357,10 @@ export const PROJECTS: ProjectCaseStudy[] = [
     safeguards: [
       'Uploads are PDF-only with a 5 MB limit; an unchanged file returns the existing report without a new AI call.',
       'Role changes are admin-only actions performed by the backend with the service-role client.',
-      'Tests cover authentication, RLS, the résumé and ATS pipeline and the interview domain with Vitest and Supertest.',
+      'Tests cover authentication, RLS, the resume and ATS pipeline and the interview domain with Vitest and Supertest.',
     ],
     limits: [
-      'AI is used for résumé extraction and ATS reports; interview evaluation scores are entered by interviewers.',
+      'AI is used for resume extraction and ATS reports; interview evaluation scores are entered by interviewers.',
       'Practice interviews currently use a fixed question set.',
       'The test suite is smaller than the other projects\' (48 backend tests).',
     ],

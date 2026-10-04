@@ -7,7 +7,7 @@ import portrait from '../../assets/portfoliopic.jpeg';
 
 /**
  * Who built it, briefly: a face, two sentences, four habits named with the
- * evidence for each. The full record is in the résumé.
+ * evidence for each. The full record is in the resume.
  */
 export const About: React.FC = () => {
   const root = useRef<HTMLElement>(null);
@@ -121,11 +121,11 @@ export const About: React.FC = () => {
                 {lpu.qualification}, {lpu.institution}
               </p>
               <p className="t-small text-ink-2">
-                {lpu.period}. {lpu.result}. {CERTIFICATIONS.length} certifications and a {TRAINING[0].title} program, all in the résumé.
+                {lpu.period}. {lpu.result}. {CERTIFICATIONS.length} certifications and a {TRAINING[0].title} program, all in the resume.
               </p>
             </div>
             <a href={PERSONAL_INFO.resume} target="_blank" rel="noopener noreferrer" className="btn btn-sm shrink-0">
-              Résumé, PDF<span className="sr-only"> (opens in a new tab)</span>
+              Resume, PDF<span className="sr-only"> (opens in a new tab)</span>
             </a>
           </div>
           <p className="t-small text-ink-2" data-reveal>

@@ -11,7 +11,7 @@ second time something happens, and each guarantee is enforced in the database.
 | LPU Reserve | One slot holds one booking (PostgreSQL exclusion constraints, 500 concurrent attempts → 1 booking in CI) | [GitHub](https://github.com/swastikongithub/Django-EduRev-P20) |
 | VulnTrack | An organization never loses its last owner (roster version field, NVD/OSV ingestion, matching) | [GitHub](https://github.com/swastikongithub/VulnTrack) |
 | Tenora | A webhook changes state once (unique external event id, legal-transition table) | [GitHub](https://github.com/swastikongithub/Tenora) |
-| AI Interview Platform | Nobody can make themselves an admin (RLS policy fix, BullMQ résumé pipeline) | [GitHub](https://github.com/swastikongithub/AI-Interview-Platform) |
+| AI Interview Platform | Nobody can make themselves an admin (RLS policy fix, BullMQ resume pipeline) | [GitHub](https://github.com/swastikongithub/AI-Interview-Platform) |
 
 ## Structure
 
@@ -53,7 +53,7 @@ One renderer, one canvas, one scene. The canvas is moved into whichever host is 
 work explorer) and aimed at a DOM anchor, so 3D systems can converge on a DOM element. Four modes abstract a
 real mechanism from each project: `race` (exclusion constraint as a rippling membrane), `boundary` (tenant
 volume that turns outsiders away), `dedupe` (twin events, the second refused at a unique index) and
-`pipeline` (résumé stations, re-uploads leave at the hash).
+`pipeline` (resume stations, re-uploads leave at the hash).
 
 - One instanced draw for all agents; positions are closed-form functions of time and a seed (deterministic)
 - Renders only while something moves; paused offscreen and in hidden tabs; disposed on unmount
@@ -112,7 +112,7 @@ keep the native cursor. Touch devices and reduced motion keep the system cursor 
 ## Content
 
 All copy lives in `src/data/portfolioData.ts` (including `SECOND_TIMES` and `HISTORY`, the commit counts per day from each repository's `git log`); project facts were audited against each project's local
-source and docs, and every number names the file it comes from. The résumé is served from
+source and docs, and every number names the file it comes from. The resume is served from
 `public/swastik-singh-resume.pdf`.
 
 ## Accessibility

@@ -94,7 +94,7 @@ export const Contact: React.FC = () => {
               ))}
               <li className="border-b border-line-2" data-reveal>
                 <a href={PERSONAL_INFO.resume} target="_blank" rel="noopener noreferrer" className="group flex items-baseline justify-between gap-4 py-3.5">
-                  <span className="font-[650]">Résumé</span>
+                  <span className="font-[650]">Resume</span>
                   <span className="t-mono text-ink-2 transition-colors group-hover:text-ink">
                     PDF, {PERSONAL_INFO.resumeUpdated} <span aria-hidden="true">↗</span>
                   </span>

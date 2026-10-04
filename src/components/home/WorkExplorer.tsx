@@ -22,7 +22,7 @@ const REPLAY: Record<Mode, string> = {
   race: 'Run the race again',
   boundary: 'Send the requests again',
   dedupe: 'Redeliver the events',
-  pipeline: 'Upload the résumés again',
+  pipeline: 'Upload the resumes again',
 };
 
 /** What the cursor says a click will send, per system. */
@@ -30,7 +30,7 @@ const CURSOR: Record<Mode, string> = {
   race: 'click: one more attempt',
   boundary: 'click: knock from outside',
   dedupe: 'click: deliver an event',
-  pipeline: 'click: upload a résumé',
+  pipeline: 'click: upload a resume',
 };
 
 /** What each colour in the instrument means, per system. Also the text equivalent of the visual. */
@@ -54,7 +54,7 @@ const LEGEND: Record<Mode, { key: 'signal' | 'ink' | 'ink3' | 'shape' | 'you'; t
     { key: 'you', text: 'click once: stored. twice, fast: duplicate' },
   ],
   pipeline: [
-    { key: 'ink', text: 'a résumé in flight, off the request path' },
+    { key: 'ink', text: 'a resume in flight, off the request path' },
     { key: 'ink3', text: 'same file again: leaves at the hash' },
     { key: 'signal', text: 'validated and persisted' },
     { key: 'you', text: 'click once: upload. twice, fast: same file' },

@@ -132,7 +132,7 @@ export const Header: React.FC = () => {
                   rel="noopener noreferrer"
                   className="rounded-full px-3.5 py-2 text-[0.95rem] font-[550] text-ink-2 transition-colors duration-200 hover:text-ink"
                 >
-                  Résumé<span className="sr-only"> (PDF, opens in a new tab)</span>
+                  Resume<span className="sr-only"> (PDF, opens in a new tab)</span>
                 </a>
               </li>
             </ul>
@@ -209,7 +209,7 @@ export const Header: React.FC = () => {
               </ul>
               <div className="mt-8 flex flex-wrap gap-2">
                 <a className="btn btn-sm" href={PERSONAL_INFO.resume} target="_blank" rel="noopener noreferrer">
-                  Résumé<span className="sr-only"> (PDF, opens in a new tab)</span>
+                  Resume<span className="sr-only"> (PDF, opens in a new tab)</span>
                 </a>
                 <button
                   type="button"

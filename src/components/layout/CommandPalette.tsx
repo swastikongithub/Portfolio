@@ -75,7 +75,7 @@ const PaletteDialog: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         run: () => toggleTheme(),
       },
       { id: 'email', group: 'Links', label: 'Write an email', hint: 'opens your mail app', keywords: 'contact', run: () => void (window.location.href = `mailto:${PERSONAL_INFO.email}`) },
-      { id: 'resume', group: 'Links', label: 'Résumé (PDF)', hint: `updated ${PERSONAL_INFO.resumeUpdated}`, keywords: 'cv', run: () => openExternal(PERSONAL_INFO.resume) },
+      { id: 'resume', group: 'Links', label: 'Resume (PDF)', hint: `updated ${PERSONAL_INFO.resumeUpdated}`, keywords: 'cv', run: () => openExternal(PERSONAL_INFO.resume) },
       { id: 'github', group: 'Links', label: 'GitHub', hint: PERSONAL_INFO.githubHandle, keywords: 'source code', run: () => openExternal(PERSONAL_INFO.github) },
       { id: 'linkedin', group: 'Links', label: 'LinkedIn', hint: PERSONAL_INFO.linkedinHandle, run: () => openExternal(PERSONAL_INFO.linkedin) },
       { id: 'instagram', group: 'Links', label: 'Instagram', hint: PERSONAL_INFO.instagramHandle, run: () => openExternal(PERSONAL_INFO.instagram) },

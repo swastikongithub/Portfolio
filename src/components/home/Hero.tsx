@@ -265,7 +265,7 @@ export const Hero: React.FC = () => {
                   See the four systems
                 </a>
                 <a href={PERSONAL_INFO.resume} target="_blank" rel="noopener noreferrer" className="btn bg-bg/70 backdrop-blur-sm" data-magnetic>
-                  Résumé
+                  Resume
                   <span className="sr-only">(PDF, opens in a new tab)</span>
                 </a>
               </div>

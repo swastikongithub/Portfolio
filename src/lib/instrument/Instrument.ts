@@ -17,7 +17,7 @@ import { emitLabel } from '../interaction/labels';
  *             hit its wall and are turned away (404), members move inside.
  *   dedupe    Tenora: events arrive in twins with the same id; the first passes the
  *             gate (a unique index) and is stored, the second dies against it.
- *   pipeline  AI Interview Platform: résumés travel through six stations; re-uploads
+ *   pipeline  AI Interview Platform: resumes travel through six stations; re-uploads
  *             of the same file leave at the hash station; the rest are persisted.
  *
  * The pointer is part of the system, not a cursor effect. It is read from the

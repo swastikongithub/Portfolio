@@ -3,7 +3,7 @@ import { gsap, useGSAP } from '../../lib/motion';
 import { SceneBox } from './SceneBox';
 
 /*
- * AI Interview Platform: one résumé through the pipeline, scrubbed by scroll.
+ * AI Interview Platform: one resume through the pipeline, scrubbed by scroll.
  * Stages follow routes/resume.routes.ts, services/resumeQueue.service.ts and
  * services/gemini.service.ts. Field names are the real response-schema keys;
  * values are elided on purpose.
@@ -158,7 +158,7 @@ export const ResumeScene: React.FC = () => {
           </div>
         </div>
 
-        {/* The résumé */}
+        {/* The resume */}
         <div data-card className="invisible absolute left-0 rounded-[var(--r-sm)] border border-line-2 bg-bg p-3 shadow-[0_20px_50px_-20px_rgb(0_0_0/0.6)]" style={{ top: LANE_Y - 165, width: 120, height: 150 }}>
           <div className="h-2 w-16 rounded bg-ink" />
           {[90, 70, 84, 60, 78, 50, 66].map((w, i) => (
